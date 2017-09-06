@@ -44,8 +44,6 @@ class MainActivity : AppCompatActivity() {
         board.layoutParams = layoutParams
 
         createBoard(width)
-
-
     }
 
     private fun createBoard(width: Int) {
@@ -66,7 +64,14 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 space.layoutParams = childParams
-                space.setOnClickListener { Toast.makeText(this@MainActivity, rowVal.toString() + "  " + colVal, Toast.LENGTH_SHORT).show() }
+                space.tag = "$row-$col"
+                space.setOnClickListener {
+                    unhighlightBoard()
+                    if (gameState[row][col] != null){
+                        val handler: SelectionHandler = SelectionHandler(this, row, col,gameState[row][col]!!)
+                        handler.highlightSelectedSpace()
+                    }
+                }
                 if (row % 2 == 0) {
                     if (col % 2 == 0) {
                         space.setBackgroundColor(Color.GRAY)
@@ -82,6 +87,27 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 board.addView(space)
+            }
+        }
+    }
+    fun unhighlightBoard(){
+        for (i in 0..7){
+            for (j in 0..7){
+                val space: ImageView = board.findViewWithTag("$i-$j") as ImageView
+                if (i % 2 == 0) {
+                    if (j % 2 == 0) {
+                        space.setBackgroundColor(Color.GRAY)
+                    } else {
+                        space.setBackgroundColor(Color.CYAN)
+                    }
+                } else {
+                    if (j % 2 == 0) {
+                        space.setBackgroundColor(Color.CYAN)
+                    } else {
+                        space.setBackgroundColor(Color.GRAY
+                        )
+                    }
+                }
             }
         }
     }
