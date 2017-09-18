@@ -18,14 +18,6 @@ import example.com.chess.Pieces.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var board: GridLayout
-//    internal var gameState = arrayOf(arrayOf<Piece?>(Piece.BLACK_ROOK, Piece.BLACK_KNIGHT, Piece.BLACK_BISHOP, Piece.BLACK_QUEEN, Piece.BLACK_KING, Piece.BLACK_BISHOP, Piece.BLACK_KNIGHT, Piece.BLACK_ROOK),
-//                                    arrayOf<Piece?>(Piece.BLACK_PAWN, Piece.BLACK_PAWN, Piece.BLACK_PAWN, Piece.BLACK_PAWN, Piece.BLACK_PAWN, Piece.BLACK_PAWN, Piece.BLACK_PAWN, Piece.BLACK_PAWN),
-//                                    arrayOf<Piece?>(null, null, null, null, null, null, null, null),
-//                                    arrayOf<Piece?>(null, null, null, null, null, null, null, null),
-//                                    arrayOf<Piece ?>(null, null, null, null, null, null, null, null),
-//                                    arrayOf<Piece?>(null, null, null, null, null, null, null, null),
-//                                    arrayOf<Piece?>(Piece.WHITE_PAWN, Piece.WHITE_PAWN, Piece.WHITE_PAWN, Piece.WHITE_PAWN, Piece.WHITE_PAWN, Piece.WHITE_PAWN, Piece.WHITE_PAWN, Piece.WHITE_PAWN),
-//                                    arrayOf<Piece?>(Piece.WHITE_ROOK, Piece.WHITE_KNIGHT, Piece.WHITE_BISHOP, Piece.WHITE_QUEEN, Piece.WHITE_KING, Piece.WHITE_BISHOP, Piece.WHITE_KNIGHT, Piece.WHITE_ROOK))
 
     internal var gameState = arrayOf(arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
@@ -35,6 +27,8 @@ class MainActivity : AppCompatActivity() {
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null))
+
+    var selectedSpot: Pair<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,6 +110,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    fun selectPiece(row: Int, col: Int){
+        val selectedPiece: ChessPiece = gameState[row][col]!!
+        selectedSpot = Pair(row, col)
+        selectedPiece.mainActivity = this
+        selectedPiece.highlightSelectedSpace()
+        if (selectedPiece is WhitePawn){
+            selectedPiece.highlightPossibleMoves()
+
+        }
+    }
 
     private fun createBoard(width: Int) {
         for (row in 0..7) {
@@ -136,12 +140,22 @@ class MainActivity : AppCompatActivity() {
                 overlay.tag = "overlay:$row-$col"
                 space.setOnClickListener {
                     unhighlightBoard()
-                    if (gameState[row][col] != null){
-                        val selectedPiece: ChessPiece = gameState[row][col]!!
-                        selectedPiece.mainActivity = this
-                        selectedPiece.highlightSelectedSpace()
-//                        Toast.makeText(this, "space", Toast.LENGTH_LONG).show()
+                    if (selectedSpot == null){//If there is no selected spot
+                        if (gameState[row][col] != null){//If the user tappes on a spot with a piece
+                            selectPiece(row, col)
+                        }
+                    }else{
+                        val selectedPiece: ChessPiece = gameState[selectedSpot!!.first][selectedSpot!!.second]!!
+                        if (selectedSpot == Pair(row, col)){//If the user tapped on the spot that was already selected
+                            selectedSpot = null
+                        }else if (gameState[row][col]?.color == selectedPiece.color){//If the user wants to switch selection to another piece
+                            selectPiece(row, col)
+                        }else if(selectedPiece.canMove(row, col)){
+                            selectedPiece.movePiece(row, col)
+                            selectedSpot = null
+                        }
                     }
+
                 }
 //                overlay.setOnClickListener {
 //                    Toast.makeText(this, "overlay", Toast.LENGTH_LONG).show()
@@ -170,9 +184,12 @@ class MainActivity : AppCompatActivity() {
         for (i in 0..7){
             for (j in 0..7){
                 val space: ImageView = board.findViewWithTag("space:$i-$j") as ImageView
+                val overlay: ImageView = board.findViewWithTag("overlay:$i-$j") as ImageView
+                overlay.setBackgroundResource(R.drawable.blank)
                 if (i % 2 == 0) {
                     if (j % 2 == 0) {
                         space.setBackgroundColor(Color.GRAY)
+
                     } else {
                         space.setBackgroundColor(Color.CYAN)
                     }

@@ -8,10 +8,20 @@ import android.widget.ImageView
  */
 abstract class ChessPiece(var mainActivity: MainActivity, var row: Int, var col: Int) {
 
-    fun highlightSelectedSpace(){
-        val selectedSpot: ImageView = mainActivity.board.findViewWithTag("space:$row-$col") as ImageView
-//        selectedSpot.setBackgroundColor(ContextCompat.getColor(mainActivity, R.color.selectedPieceColor))
-        selectedSpot.setBackgroundResource(R.drawable.border)
+    abstract val color: String
+    abstract var possibleMoves: MutableSet<Pair<Int, Int>>
 
+    fun highlightSelectedSpace(){
+        val selectedSpot: ImageView = mainActivity.board.findViewWithTag("overlay:$row-$col") as ImageView
+        selectedSpot.setBackgroundResource(R.drawable.border)
     }
+    abstract fun movePiece(newRow: Int, newCol: Int)
+
+    abstract fun canMove(newRow: Int, newCol: Int): Boolean
+
+
+
+
+    abstract fun highlightPossibleMoves()
+
 }
