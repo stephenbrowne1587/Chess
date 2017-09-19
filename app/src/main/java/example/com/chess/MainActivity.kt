@@ -95,11 +95,11 @@ class MainActivity : AppCompatActivity() {
                     is BlackPawn -> space.setImageResource(R.drawable.blackpawn)
 
 
-                    is BlackRook -> space.setImageResource(R.drawable.blackpawn)
+                    is BlackRook -> space.setImageResource(R.drawable.blackrook)
                     is BlackKnight -> space.setImageResource(R.drawable.blackknight)
                     is BlackBishop -> space.setImageResource(R.drawable.blackbishop)
                     is BlackKing -> space.setImageResource(R.drawable.blackking)
-                    is BlackQueen -> space.setImageResource(R.drawable.blackking)
+                    is BlackQueen -> space.setImageResource(R.drawable.blackqueen)
                     is WhitePawn -> space.setImageResource(R.drawable.whitepawn)
                     is WhiteRook -> space.setImageResource(R.drawable.whiterook)
                     is WhiteKnight -> space.setImageResource(R.drawable.whiteknight)
@@ -115,10 +115,8 @@ class MainActivity : AppCompatActivity() {
         selectedSpot = Pair(row, col)
         selectedPiece.mainActivity = this
         selectedPiece.highlightSelectedSpace()
-        if (selectedPiece is WhitePawn){
-            selectedPiece.highlightPossibleMoves()
 
-        }
+        selectedPiece.highlightPossibleMoves()
     }
 
     private fun createBoard(width: Int) {
@@ -152,6 +150,8 @@ class MainActivity : AppCompatActivity() {
                             selectPiece(row, col)
                         }else if(selectedPiece.canMove(row, col)){
                             selectedPiece.movePiece(row, col)
+                            selectedSpot = null
+                        }else{//The user tapped an empty spot that is not a valid move.  Unselecte piece
                             selectedSpot = null
                         }
                     }

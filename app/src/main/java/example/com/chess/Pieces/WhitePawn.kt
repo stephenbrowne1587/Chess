@@ -15,14 +15,29 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override val color: String
         get() = "white"
+    var isFirstMove: Boolean = true
 
     override fun highlightPossibleMoves(){
         possibleMoves.clear()
-        for (i in 1..2){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-i}-${col}") as ImageView
-
+        if (row - 1 >= 0 && mainActivity.gameState[row-1][col] == null){
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-1}-${col}") as ImageView
             nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(row-i, col))
+            possibleMoves.add(Pair(row-1, col))
+        }
+        if (isFirstMove && row - 2 >= 0 && mainActivity.gameState[row-2][col] == null){
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-2}-${col}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+            possibleMoves.add(Pair(row-2, col))
+        }
+        if (col - 1 >= 0 && mainActivity.gameState[row-1][col-1]?.color == "black"){
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-1}-${col-1}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+            possibleMoves.add(Pair(row-1, col-1))
+        }
+        if (col + 1 < 8 && mainActivity.gameState[row-1][col+1]?.color == "black"){
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-1}-${col+1}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+            possibleMoves.add(Pair(row-1, col+1))
         }
     }
 
@@ -33,6 +48,7 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     }
 
     override fun movePiece(newRow: Int, newCol: Int) {
+        isFirstMove = false
         Log.i("kkkkkkk", "KKKKKKKK")
         mainActivity.gameState[newRow][newCol] = this
         mainActivity.gameState[row][col] = null
