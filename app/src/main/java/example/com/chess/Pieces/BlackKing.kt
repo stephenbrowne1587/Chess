@@ -10,7 +10,7 @@ import example.com.chess.R
  */
 class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
     override val color: String
-        get() = "white"
+        get() = "black"
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
