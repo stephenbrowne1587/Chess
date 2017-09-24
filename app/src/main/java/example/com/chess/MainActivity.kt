@@ -2,6 +2,7 @@ package example.com.chess
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Color.WHITE
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
 
     var selectedSpot: Pair<Int, Int>? = null
     var activePlayer: String = WHITE
+    val capturedWhite: ArrayList<ChessPiece?> = arrayListOf()
+    val capturedBlack: ArrayList<ChessPiece?> = arrayListOf()
 
     companion object {
         const val BLACK = "black"
@@ -44,6 +47,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val density = this.getResources().getDisplayMetrics().density
+
         board = findViewById(R.id.board) as GridLayout
         whiteCaptured = findViewById(R.id.light_captured_layout) as GridLayout
         blackCaptured = findViewById(R.id.dark_captured_layout) as GridLayout
@@ -53,7 +58,9 @@ class MainActivity : AppCompatActivity() {
 //        val height = displayMetrics.heightPixels
         val width = displayMetrics.widthPixels
         val boardWidth = width - 50
-        val capturedSectionWidth = width / 13 * 8 - 10
+        val capturedSectionPaddingPX = (10 * density.toInt())
+        val capturedSectionWidth = width / 13 * 8
+        val capturedSectionHeight = width / 13 * 2
 
         val layoutParams = board.layoutParams
         layoutParams.width = boardWidth
@@ -61,12 +68,12 @@ class MainActivity : AppCompatActivity() {
         board.layoutParams = layoutParams
 
         val capturedWhiteLayoutParams = whiteCaptured.layoutParams
-        capturedWhiteLayoutParams.width = width / 13 * 8 + 10
-        capturedWhiteLayoutParams.height = width / 5 + 10
+        capturedWhiteLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
+        capturedWhiteLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
 
         val capturedBlackLayoutParams = blackCaptured.layoutParams
-        capturedBlackLayoutParams.width = capturedSectionWidth + 15
-        capturedBlackLayoutParams.height = width / 5
+        capturedBlackLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
+        capturedBlackLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
 
 
 
@@ -157,22 +164,34 @@ class MainActivity : AppCompatActivity() {
     }
     fun capturePiece(piece: ChessPiece){
         Log.i("piece captured", piece.color + " piece captured")
-        when (piece){
-//            is BlackPawn -> space.setImageResource(R.drawable.blackpawn)
-//
-//
-//            is BlackRook -> space.setImageResource(R.drawable.blackrook)
-//            is BlackKnight -> space.setImageResource(R.drawable.blackknight)
-//            is BlackBishop -> space.setImageResource(R.drawable.blackbishop)
-//            is BlackKing -> space.setImageResource(R.drawable.blackking)
-//            is BlackQueen -> space.setImageResource(R.drawable.blackqueen)
-//            is WhitePawn -> space.setImageResource(R.drawable.whitepawn)
-//            is WhiteRook -> space.setImageResource(R.drawable.whiterook)
-//            is WhiteKnight -> space.setImageResource(R.drawable.whiteknight)
-//            is WhiteBishop -> space.setImageResource(R.drawable.whitebishop)
-//            is WhiteKing -> space.setImageResource(R.drawable.whiteking)
-//            is WhiteQueen -> space.setImageResource(R.drawable.whitequeen)
+        if (piece.color == WHITE){
+            val row = if (capturedWhite.size >= 8) 1 else 0
+            val col = capturedWhite.size % 8
+            capturedWhite.add(piece)
+            val spot = whiteCaptured.findViewWithTag("light:$row-$col") as ImageView
+            when (piece){
+                is WhitePawn -> spot.setImageResource(R.drawable.whitepawn)
+                is WhiteRook -> spot.setImageResource(R.drawable.whiterook)
+                is WhiteKnight -> spot.setImageResource(R.drawable.whiteknight)
+                is WhiteBishop -> spot.setImageResource(R.drawable.whitebishop)
+                is WhiteKing -> spot.setImageResource(R.drawable.whiteking)
+                is WhiteQueen -> spot.setImageResource(R.drawable.whitequeen)
+            }
+        }else{
+            val row = if (capturedBlack.size >= 8) 1 else 0
+            val col = capturedBlack.size % 8
+            capturedBlack.add(piece)
+            val spot = blackCaptured.findViewWithTag("dark:$row-$col") as ImageView
+            when (piece){
+                is BlackPawn -> spot.setImageResource(R.drawable.blackpawn)
+                is BlackRook -> spot.setImageResource(R.drawable.blackrook)
+                is BlackKnight -> spot.setImageResource(R.drawable.blackknight)
+                is BlackBishop -> spot.setImageResource(R.drawable.blackbishop)
+                is BlackKing -> spot.setImageResource(R.drawable.blackking)
+                is BlackQueen -> spot.setImageResource(R.drawable.blackqueen)
+            }
         }
+
     }
     private fun createCapturedSections(width: Int){
         for (row in 0..1) {
@@ -191,14 +210,9 @@ class MainActivity : AppCompatActivity() {
 
                 lightSpot.tag = "light:$row-$col"
                 darkSpot.tag = "dark:$row-$col"
-                darkSpot.setBackgroundColor(Color.CYAN)
-
-
 
                 whiteCaptured.addView(lightSpot)
                 blackCaptured.addView(darkSpot)
-                darkSpot.setImageResource(R.drawable.blackking)
-
             }
         }
     }
@@ -241,9 +255,9 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-                overlay.setOnClickListener {
-                    Toast.makeText(this, "overlay", Toast.LENGTH_LONG).show()
-                }
+//                overlay.setOnClickListener {
+//                    Toast.makeText(this, "overlay", Toast.LENGTH_LONG).show()
+//                }
                 if (row % 2 == 0) {
                     if (col % 2 == 0) {
                         space.setBackgroundResource(R.drawable.light_square)
