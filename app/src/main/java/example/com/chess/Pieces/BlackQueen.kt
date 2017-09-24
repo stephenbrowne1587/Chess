@@ -146,6 +146,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
 
 
     override fun movePiece(newRow: Int, newCol: Int) {
+        super.movePiece(newRow, newCol)
         mainActivity.gameState[newRow][newCol] = this
         mainActivity.gameState[row][col] = null
 

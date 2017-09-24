@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.Display
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,8 @@ import example.com.chess.Pieces.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var board: GridLayout
+    lateinit var whiteCaptured: GridLayout
+    lateinit var blackCaptured: GridLayout
 
     internal var gameState = arrayOf(arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
@@ -29,25 +32,58 @@ class MainActivity : AppCompatActivity() {
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null))
 
     var selectedSpot: Pair<Int, Int>? = null
+    var activePlayer: String = WHITE
+
+    companion object {
+        const val BLACK = "black"
+        const val WHITE = "white"
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         board = findViewById(R.id.board) as GridLayout
+        whiteCaptured = findViewById(R.id.light_captured_layout) as GridLayout
+        blackCaptured = findViewById(R.id.dark_captured_layout) as GridLayout
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
+//        val height = displayMetrics.heightPixels
         val width = displayMetrics.widthPixels
+        val boardWidth = width - 50
+        val capturedSectionWidth = width / 13 * 8 - 10
 
         val layoutParams = board.layoutParams
-        layoutParams.width = width
-        layoutParams.height = width
-
+        layoutParams.width = boardWidth
+        layoutParams.height = boardWidth
         board.layoutParams = layoutParams
 
-        createBoard(width)
+        val capturedWhiteLayoutParams = whiteCaptured.layoutParams
+        capturedWhiteLayoutParams.width = width / 13 * 8 + 10
+        capturedWhiteLayoutParams.height = width / 5 + 10
+
+        val capturedBlackLayoutParams = blackCaptured.layoutParams
+        capturedBlackLayoutParams.width = capturedSectionWidth + 15
+        capturedBlackLayoutParams.height = width / 5
+
+
+
+        whiteCaptured.layoutParams = capturedWhiteLayoutParams
+        blackCaptured.layoutParams = capturedBlackLayoutParams
+
+        createCapturedSections(capturedSectionWidth)
+        createBoard(boardWidth)
+
+    }
+
+    fun toggleActivePlayer(){
+        if (activePlayer == WHITE){
+            activePlayer = BLACK
+        }else{
+            activePlayer = WHITE
+        }
     }
 
     fun resetBoard(){
@@ -93,8 +129,6 @@ class MainActivity : AppCompatActivity() {
 
                 when (gameState[row][col]){
                     is BlackPawn -> space.setImageResource(R.drawable.blackpawn)
-
-
                     is BlackRook -> space.setImageResource(R.drawable.blackrook)
                     is BlackKnight -> space.setImageResource(R.drawable.blackknight)
                     is BlackBishop -> space.setImageResource(R.drawable.blackbishop)
@@ -114,9 +148,59 @@ class MainActivity : AppCompatActivity() {
         val selectedPiece: ChessPiece = gameState[row][col]!!
         selectedSpot = Pair(row, col)
         selectedPiece.mainActivity = this
-        selectedPiece.highlightSelectedSpace()
-
         selectedPiece.highlightPossibleMoves()
+        if (selectedPiece.possibleMoves.isNotEmpty()){//only allow a piece to be selected if it can move somewhere
+            selectedPiece.highlightSelectedSpace()
+        }else{
+            selectedSpot = null
+        }
+    }
+    fun capturePiece(piece: ChessPiece){
+        Log.i("piece captured", piece.color + " piece captured")
+        when (piece){
+//            is BlackPawn -> space.setImageResource(R.drawable.blackpawn)
+//
+//
+//            is BlackRook -> space.setImageResource(R.drawable.blackrook)
+//            is BlackKnight -> space.setImageResource(R.drawable.blackknight)
+//            is BlackBishop -> space.setImageResource(R.drawable.blackbishop)
+//            is BlackKing -> space.setImageResource(R.drawable.blackking)
+//            is BlackQueen -> space.setImageResource(R.drawable.blackqueen)
+//            is WhitePawn -> space.setImageResource(R.drawable.whitepawn)
+//            is WhiteRook -> space.setImageResource(R.drawable.whiterook)
+//            is WhiteKnight -> space.setImageResource(R.drawable.whiteknight)
+//            is WhiteBishop -> space.setImageResource(R.drawable.whitebishop)
+//            is WhiteKing -> space.setImageResource(R.drawable.whiteking)
+//            is WhiteQueen -> space.setImageResource(R.drawable.whitequeen)
+        }
+    }
+    private fun createCapturedSections(width: Int){
+        for (row in 0..1) {
+            for (col in 0..7) {
+                val lightSpot = ImageView(this)
+                val darkSpot = ImageView(this)
+                val childParams = GridLayout.LayoutParams()
+                childParams.width = width / 8
+                childParams.height = width / 8
+
+                childParams.rowSpec = GridLayout.spec(row)
+                childParams.columnSpec = GridLayout.spec(col)
+
+                lightSpot.layoutParams = childParams
+                darkSpot.layoutParams = childParams
+
+                lightSpot.tag = "light:$row-$col"
+                darkSpot.tag = "dark:$row-$col"
+                darkSpot.setBackgroundColor(Color.CYAN)
+
+
+
+                whiteCaptured.addView(lightSpot)
+                blackCaptured.addView(darkSpot)
+                darkSpot.setImageResource(R.drawable.blackking)
+
+            }
+        }
     }
 
     private fun createBoard(width: Int) {
@@ -139,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                 space.setOnClickListener {
                     unhighlightBoard()
                     if (selectedSpot == null){//If there is no selected spot
-                        if (gameState[row][col] != null){//If the user tappes on a spot with a piece
+                        if (gameState[row][col] != null && gameState[row][col]?.color == activePlayer){//If the user taps on a spot with a piece
                             selectPiece(row, col)
                         }
                     }else{
@@ -157,21 +241,20 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-//                overlay.setOnClickListener {
-//                    Toast.makeText(this, "overlay", Toast.LENGTH_LONG).show()
-//                }
+                overlay.setOnClickListener {
+                    Toast.makeText(this, "overlay", Toast.LENGTH_LONG).show()
+                }
                 if (row % 2 == 0) {
                     if (col % 2 == 0) {
-                        space.setBackgroundColor(Color.GRAY)
+                        space.setBackgroundResource(R.drawable.light_square)
                     } else {
-                        space.setBackgroundColor(Color.CYAN)
+                        space.setBackgroundResource(R.drawable.dark_square)
                     }
                 } else {
                     if (col % 2 == 0) {
-                        space.setBackgroundColor(Color.CYAN)
+                        space.setBackgroundResource(R.drawable.dark_square)
                     } else {
-                        space.setBackgroundColor(Color.GRAY
-                        )
+                        space.setBackgroundResource(R.drawable.light_square)
                     }
                 }
                 board.addView(space)
@@ -188,17 +271,17 @@ class MainActivity : AppCompatActivity() {
                 overlay.setBackgroundResource(R.drawable.blank)
                 if (i % 2 == 0) {
                     if (j % 2 == 0) {
-                        space.setBackgroundColor(Color.GRAY)
+                        space.setBackgroundResource(R.drawable.light_square)
 
                     } else {
-                        space.setBackgroundColor(Color.CYAN)
+                        space.setBackgroundResource(R.drawable.dark_square)
                     }
                 } else {
                     if (j % 2 == 0) {
-                        space.setBackgroundColor(Color.CYAN)
+                        space.setBackgroundResource(R.drawable.dark_square)
                     } else {
-                        space.setBackgroundColor(Color.GRAY
-                        )
+                        space.setBackgroundResource(R.drawable.light_square)
+
                     }
                 }
             }

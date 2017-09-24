@@ -82,6 +82,7 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
  
 
     override fun movePiece(newRow: Int, newCol: Int) {
+        super.movePiece(newRow, newCol)
         mainActivity.gameState[newRow][newCol] = this
         mainActivity.gameState[row][col] = null
 

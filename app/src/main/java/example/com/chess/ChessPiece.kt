@@ -15,7 +15,12 @@ abstract class ChessPiece(var mainActivity: MainActivity, var row: Int, var col:
         val selectedSpot: ImageView = mainActivity.board.findViewWithTag("overlay:$row-$col") as ImageView
         selectedSpot.setBackgroundResource(R.drawable.border)
     }
-    abstract fun movePiece(newRow: Int, newCol: Int)
+    open fun movePiece(newRow: Int, newCol: Int){
+        mainActivity.toggleActivePlayer()
+        if (mainActivity.gameState[newRow][newCol] != null && mainActivity.gameState[newRow][newCol]?.color != mainActivity.gameState[row][col]?.color){
+            mainActivity.capturePiece(mainActivity.gameState[newRow][newCol]!!)
+        }
+    }
 
     abstract fun canMove(newRow: Int, newCol: Int): Boolean
 

@@ -5,17 +5,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="example.com.chess.MainActivity">
+    tools:context="example.com.chess.MainActivity"
+    android:background="@drawable/extra_light_square">
+
+    <GridLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/dark_captured_layout"
+        android:background="@drawable/dark_captured_background"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/board"
+        android:rowCount="2"
+        android:columnCount="8"
+        android:padding="4dp"
+        android:layout_marginBottom="10dp"
+        >
+    </GridLayout>
 
     <GridLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/board"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/light_captured_layout"
         android:rowCount="8"
         android:columnCount="8"
+
         >
 
+    </GridLayout>
+    <GridLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/light_captured_layout"
+        android:background="@drawable/light_captured_background"
+        android:layout_centerHorizontal="true"
+        android:rowCount="2"
+        android:columnCount="8"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        >
 
     </GridLayout>
 
