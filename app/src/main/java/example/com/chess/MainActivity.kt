@@ -12,16 +12,15 @@ import android.view.Display
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.GridLayout
-import android.widget.GridView
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import example.com.chess.Pieces.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var board: GridLayout
     lateinit var whiteCaptured: GridLayout
     lateinit var blackCaptured: GridLayout
+    lateinit var whitePawnPromoteLayout: GridLayout
+    lateinit var blackPawnPromoteLayout: GridLayout
 
     internal var gameState = arrayOf(arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
@@ -33,6 +32,7 @@ class MainActivity : AppCompatActivity() {
                                     arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null))
 
     var selectedSpot: Pair<Int, Int>? = null
+    var lastMove: Pair<Int, Int>? = null
     var activePlayer: String = WHITE
     val capturedWhite: ArrayList<ChessPiece?> = arrayListOf()
     val capturedBlack: ArrayList<ChessPiece?> = arrayListOf()
@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         const val BLACK = "black"
         const val WHITE = "white"
     }
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,12 +54,15 @@ class MainActivity : AppCompatActivity() {
         board = findViewById(R.id.board) as GridLayout
         whiteCaptured = findViewById(R.id.light_captured_layout) as GridLayout
         blackCaptured = findViewById(R.id.dark_captured_layout) as GridLayout
+        whitePawnPromoteLayout = findViewById(R.id.whitePawnPromoteLayout) as GridLayout
+        blackPawnPromoteLayout = findViewById(R.id.blackPawnPromoteLayout) as GridLayout
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 //        val height = displayMetrics.heightPixels
         val width = displayMetrics.widthPixels
         val boardWidth = width - 50
+
         val capturedSectionPaddingPX = (10 * density.toInt())
         val capturedSectionWidth = width / 13 * 8
         val capturedSectionHeight = width / 13 * 2
@@ -75,7 +80,8 @@ class MainActivity : AppCompatActivity() {
         capturedBlackLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
         capturedBlackLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
 
-
+        createWhitePawnPromoteLayout(boardWidth, whitePawnPromoteLayout, capturedSectionPaddingPX)
+        createBlackPawnPromoteLayout(boardWidth, blackPawnPromoteLayout, capturedSectionPaddingPX)
 
         whiteCaptured.layoutParams = capturedWhiteLayoutParams
         blackCaptured.layoutParams = capturedBlackLayoutParams
@@ -83,6 +89,124 @@ class MainActivity : AppCompatActivity() {
         createCapturedSections(capturedSectionWidth)
         createBoard(boardWidth)
 
+    }
+
+    fun createWhitePawnPromoteLayout(boardWidth: Int, promoteLayout: GridLayout, capturedSetionPaddingPX:Int){
+        val layoutParams: RelativeLayout.LayoutParams = whitePawnPromoteLayout.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.width = boardWidth / 4 * 3 + capturedSetionPaddingPX
+        layoutParams.height = boardWidth / 6 + capturedSetionPaddingPX
+        layoutParams.setMargins(0, 0, 0, boardWidth / 32 * 13)
+        promoteLayout.setPadding(13,10,10,10)
+
+        for (col in 0.until(4)){
+            val whiteImage = ImageView(this)
+            whiteImage.setPadding(15,15,15,15)
+            val imageLayoutParams = GridLayout.LayoutParams()
+            imageLayoutParams.rowSpec = GridLayout.spec(0)
+            imageLayoutParams.columnSpec = GridLayout.spec(col)
+            when(col){
+                0 -> {
+                    whiteImage.setImageResource(R.drawable.whitequeen)
+                    whiteImage.setTag("whitequeen")
+                }
+                1 -> {
+                    whiteImage.setImageResource(R.drawable.whitebishop)
+                    whiteImage.setTag("whitebishop")
+                }
+                2 -> {
+                    whiteImage.setImageResource(R.drawable.whiterook)
+                    whiteImage.setTag("whiterook")
+                }
+                3 -> {
+                    whiteImage.setImageResource(R.drawable.whiteknight)
+                    whiteImage.setTag("whiteknight")
+                }
+            }
+            imageLayoutParams.width = boardWidth / 16 * 3
+            imageLayoutParams.height = boardWidth / 16 * 3
+            whiteImage.layoutParams = imageLayoutParams
+            whiteImage.setOnClickListener {
+                when(whiteImage.tag){
+                    "whitequeen" -> promotePawn(WhiteQueen(this, lastMove!!.first, lastMove!!.second))
+                    "whitebishop" -> promotePawn(WhiteBishop(this, lastMove!!.first, lastMove!!.second))
+                    "whiterook" -> promotePawn(WhiteRook(this, lastMove!!.first, lastMove!!.second))
+                    "whiteknight" -> promotePawn(WhiteKnight(this, lastMove!!.first, lastMove!!.second))
+                }
+            }
+            promoteLayout.addView(whiteImage)
+        }
+    }
+
+    fun createBlackPawnPromoteLayout(boardWidth: Int, promoteLayout: GridLayout, capturedSetionPaddingPX:Int){
+        val layoutParams: RelativeLayout.LayoutParams = blackPawnPromoteLayout.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.width = boardWidth / 4 * 3 + capturedSetionPaddingPX
+        layoutParams.height = boardWidth / 6 + capturedSetionPaddingPX
+        layoutParams.setMargins(0, 0, 0, boardWidth / 32 * 13)
+        promoteLayout.setPadding(13,10,10,10)
+
+        for (col in 0.until(4)){
+            val blackImage = ImageView(this)
+            blackImage.setPadding(15,15,15,15)
+            val imageLayoutParams = GridLayout.LayoutParams()
+            imageLayoutParams.rowSpec = GridLayout.spec(0)
+            imageLayoutParams.columnSpec = GridLayout.spec(col)
+            when(col){
+                0 -> {
+                    blackImage.setImageResource(R.drawable.blackqueen)
+                    blackImage.setTag("blackqueen")
+                }
+                1 -> {
+                    blackImage.setImageResource(R.drawable.blackbishop)
+                    blackImage.setTag("blackbishop")
+                }
+                2 -> {
+                    blackImage.setImageResource(R.drawable.blackrook)
+                    blackImage.setTag("blackrook")
+                }
+                3 -> {
+                    blackImage.setImageResource(R.drawable.blackknight)
+                    blackImage.setTag("blackknight")
+                }
+            }
+            imageLayoutParams.width = boardWidth / 16 * 3
+            imageLayoutParams.height = boardWidth / 16 * 3
+            blackImage.layoutParams = imageLayoutParams
+            blackImage.setOnClickListener {
+                when(blackImage.tag){
+                    "blackqueen" -> promotePawn(BlackQueen(this, lastMove!!.first, lastMove!!.second))
+                    "blackbishop" -> promotePawn(BlackBishop(this, lastMove!!.first, lastMove!!.second))
+                    "blackrook" -> promotePawn(BlackRook(this, lastMove!!.first, lastMove!!.second))
+                    "blackknight" -> promotePawn(BlackKnight(this, lastMove!!.first, lastMove!!.second))
+                }
+            }
+            promoteLayout.addView(blackImage)
+        }
+    }
+    fun promotePawn(piece: ChessPiece){
+        gameState[piece.row][piece.col] = piece
+        val space:ImageView = board.findViewWithTag("space:${piece.row}-${piece.col}") as ImageView
+        when(piece){
+            is BlackPawn -> space.setImageResource(R.drawable.blackpawn)
+            is BlackRook -> space.setImageResource(R.drawable.blackrook)
+            is BlackKnight -> space.setImageResource(R.drawable.blackknight)
+            is BlackBishop -> space.setImageResource(R.drawable.blackbishop)
+            is BlackKing -> space.setImageResource(R.drawable.blackking)
+            is BlackQueen -> space.setImageResource(R.drawable.blackqueen)
+            is WhitePawn -> space.setImageResource(R.drawable.whitepawn)
+            is WhiteRook -> space.setImageResource(R.drawable.whiterook)
+            is WhiteKnight -> space.setImageResource(R.drawable.whiteknight)
+            is WhiteBishop -> space.setImageResource(R.drawable.whitebishop)
+            is WhiteKing -> space.setImageResource(R.drawable.whiteking)
+            is WhiteQueen -> space.setImageResource(R.drawable.whitequeen)
+        }
+        blackPawnPromoteLayout.translationX = -2000f
+        whitePawnPromoteLayout.translationX = -2000f
+    }
+    fun showWhitePawnPromoteLayout(){
+        whitePawnPromoteLayout.translationX = 0f
+    }
+    fun showBlackPawnPromoteLayout(){
+        blackPawnPromoteLayout.translationX = 0f
     }
 
     fun toggleActivePlayer(){
@@ -255,9 +379,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-//                overlay.setOnClickListener {
-//                    Toast.makeText(this, "overlay", Toast.LENGTH_LONG).show()
-//                }
+
                 if (row % 2 == 0) {
                     if (col % 2 == 0) {
                         space.setBackgroundResource(R.drawable.light_square)
