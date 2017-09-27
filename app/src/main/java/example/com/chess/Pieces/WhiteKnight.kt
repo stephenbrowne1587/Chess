@@ -12,6 +12,7 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
     override val color: String
         get() = "white"
 
+
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
         possibleMoves.clear()
@@ -75,10 +76,9 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
     override fun canMove(newRow: Int, newCol: Int): Boolean{
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
-
-
     override fun movePiece(newRow: Int, newCol: Int) {
         super.movePiece(newRow, newCol)
+
         mainActivity.gameState[newRow][newCol] = this
         mainActivity.gameState[row][col] = null
 
@@ -91,6 +91,8 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         this.row = newRow
         this.col = newCol
     }
+
+
 
 
 }

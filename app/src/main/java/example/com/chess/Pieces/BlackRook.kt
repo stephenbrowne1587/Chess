@@ -11,6 +11,7 @@ import example.com.chess.R
 class BlackRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
     override val color: String
         get() = "black"
+    var hasMoved = false
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
         possibleMoves.clear()
@@ -84,6 +85,7 @@ class BlackRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
 
     override fun movePiece(newRow: Int, newCol: Int) {
         super.movePiece(newRow, newCol)
+        hasMoved = true
         mainActivity.gameState[newRow][newCol] = this
         mainActivity.gameState[row][col] = null
 

@@ -11,6 +11,7 @@ import example.com.chess.R
 class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
     override val color: String
         get() = "black"
+    var hasMoved = false
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
@@ -73,6 +74,16 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                 possibleMoves.add(Pair(row + 1, col - 1))
             }
         }
+        if (canCastleShort()){
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${0}-${6}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+            possibleMoves.add(Pair(0, 6))
+        }
+        if (canCastleLong()){
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${0}-${2}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+            possibleMoves.add(Pair(0, 2))
+        }
 
     }
 
@@ -83,6 +94,13 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
 
     override fun movePiece(newRow: Int, newCol: Int) {
         super.movePiece(newRow, newCol)
+        if (!hasMoved && newRow == 0 && newCol == 6){
+            moveRookShort()
+        }
+        if (!hasMoved && newRow == 0 && newCol == 2){
+            moveRookLong()
+        }
+        hasMoved = true
         mainActivity.gameState[newRow][newCol] = this
         mainActivity.gameState[row][col] = null
 
@@ -94,6 +112,39 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         newSpot.setImageResource(R.drawable.blackking)
         this.row = newRow
         this.col = newCol
+    }
+    fun canCastleLong(): Boolean {
+        if (mainActivity.gameState[0][0] != null && mainActivity.gameState[0][0] is BlackRook) {
+            val rookLong = mainActivity.gameState[0][0] as BlackRook
+            if (!rookLong.hasMoved && !this.hasMoved) {
+                if (mainActivity.gameState[0][1] == null && mainActivity.gameState[0][2] == null && mainActivity.gameState[0][3] == null) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    fun canCastleShort(): Boolean {
+        if (mainActivity.gameState[0][7] != null && mainActivity.gameState[0][7] is BlackRook) {
+            val rookShort = mainActivity.gameState[0][7] as BlackRook
+            if (!rookShort.hasMoved && !this.hasMoved) {
+                if (mainActivity.gameState[0][5] == null && mainActivity.gameState[0][6] == null) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun moveRookShort(){
+        val rookShort = mainActivity.gameState[0][7] as BlackRook
+        rookShort.movePiece(0, 5)
+        mainActivity.toggleActivePlayer()
+    }
+    fun moveRookLong(){
+        val rookLong = mainActivity.gameState[0][0] as BlackRook
+        rookLong.movePiece(0, 3)
+        mainActivity.toggleActivePlayer()
     }
 
 
