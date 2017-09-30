@@ -21,19 +21,18 @@ class MainActivity : AppCompatActivity() {
     lateinit var blackCaptured: GridLayout
     lateinit var whitePawnPromoteLayout: GridLayout
     lateinit var blackPawnPromoteLayout: GridLayout
+    lateinit var whiteCheckTextView: TextView
+    lateinit var blackCheckTextView: TextView
 
-    internal var gameState = arrayOf(arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null),
-                                    arrayOf<ChessPiece?>(null, null, null, null, null, null, null, null))
+    internal var gameState: Array<Array<ChessPiece?>> = Array(8, {Array<ChessPiece?>(8, {i -> null})}) // 2D array initialized with all null values.
+
 
     var selectedSpot: Pair<Int, Int>? = null
     var lastMove: Pair<Int, Int>? = null
     var activePlayer: String = WHITE
+    var pawnPromoteLayoutVisible = false
+    var whiteInCheck = false
+    var blackInCheck = false
     val capturedWhite: ArrayList<ChessPiece?> = arrayListOf()
     val capturedBlack: ArrayList<ChessPiece?> = arrayListOf()
 
@@ -56,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         blackCaptured = findViewById(R.id.dark_captured_layout) as GridLayout
         whitePawnPromoteLayout = findViewById(R.id.whitePawnPromoteLayout) as GridLayout
         blackPawnPromoteLayout = findViewById(R.id.blackPawnPromoteLayout) as GridLayout
+        whiteCheckTextView = findViewById(R.id.light_check_textview) as TextView
+        blackCheckTextView = findViewById(R.id.dark_check_textview) as TextView
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -201,11 +202,14 @@ class MainActivity : AppCompatActivity() {
         }
         blackPawnPromoteLayout.translationX = -2000f
         whitePawnPromoteLayout.translationX = -2000f
+        pawnPromoteLayoutVisible = false
     }
     fun showWhitePawnPromoteLayout(){
+        pawnPromoteLayoutVisible = true
         whitePawnPromoteLayout.translationX = 0f
     }
     fun showBlackPawnPromoteLayout(){
+        pawnPromoteLayoutVisible = true
         blackPawnPromoteLayout.translationX = 0f
     }
 
@@ -315,7 +319,6 @@ class MainActivity : AppCompatActivity() {
                 is BlackQueen -> spot.setImageResource(R.drawable.blackqueen)
             }
         }
-
     }
     private fun createCapturedSections(width: Int){
         for (row in 0..1) {
@@ -359,25 +362,26 @@ class MainActivity : AppCompatActivity() {
                 space.tag = "space:$row-$col"
                 overlay.tag = "overlay:$row-$col"
                 space.setOnClickListener {
-                    unhighlightBoard()
-                    if (selectedSpot == null){//If there is no selected spot
-                        if (gameState[row][col] != null && gameState[row][col]?.color == activePlayer){//If the user taps on a spot with a piece
-                            selectPiece(row, col)
-                        }
-                    }else{
-                        val selectedPiece: ChessPiece = gameState[selectedSpot!!.first][selectedSpot!!.second]!!
-                        if (selectedSpot == Pair(row, col)){//If the user tapped on the spot that was already selected
-                            selectedSpot = null
-                        }else if (gameState[row][col]?.color == selectedPiece.color){//If the user wants to switch selection to another piece
-                            selectPiece(row, col)
-                        }else if(selectedPiece.canMove(row, col)){
-                            selectedPiece.movePiece(row, col)
-                            selectedSpot = null
-                        }else{//The user tapped an empty spot that is not a valid move.  Unselecte piece
-                            selectedSpot = null
+                    if (!pawnPromoteLayoutVisible){// Any condition that would cause the board to be disabled.
+                        unhighlightBoard()
+                        if (selectedSpot == null){//If there is no selected spot
+                            if (gameState[row][col] != null && gameState[row][col]?.color == activePlayer){//If the user taps on a spot with a piece
+                                selectPiece(row, col)
+                            }
+                        }else{
+                            val selectedPiece: ChessPiece = gameState[selectedSpot!!.first][selectedSpot!!.second]!!
+                            if (selectedSpot == Pair(row, col)){//If the user tapped on the spot that was already selected
+                                selectedSpot = null
+                            }else if (gameState[row][col]?.color == selectedPiece.color){//If the user wants to switch selection to another piece
+                                selectPiece(row, col)
+                            }else if(selectedPiece.canMove(row, col)){
+                                selectedPiece.movePiece(row, col)
+                                selectedSpot = null
+                            }else{//The user tapped an empty spot that is not a valid move.  Unselecte piece
+                                selectedSpot = null
+                            }
                         }
                     }
-
                 }
 
                 if (row % 2 == 0) {

@@ -6,5 +6,6 @@
     <color name="selectedPieceColor">#55ff00ff</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="checkRed">#dd5522</color>
 
 </resources>

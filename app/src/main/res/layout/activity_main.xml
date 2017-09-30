@@ -8,50 +8,91 @@
     tools:context="example.com.chess.MainActivity"
     android:background="@drawable/extra_light_square">
 
-    <GridLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/dark_captured_layout"
-        android:background="@drawable/dark_captured_background"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/board"
-        android:rowCount="2"
-        android:columnCount="8"
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dark_container"
         android:padding="5dp"
+        android:layout_above="@+id/board"
         android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+
         >
-    </GridLayout>
+        <GridLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/dark_captured_layout"
+            android:background="@drawable/dark_captured_background"
+            android:layout_centerHorizontal="true"
+            android:rowCount="2"
+            android:columnCount="8"
+            android:padding="5dp"
+            >
+        </GridLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dark_check_textview"
+            android:text="CHECK"
+            style="@style/AudioFileInfoOverlayText"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
+
 
     <GridLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/board"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/light_captured_layout"
+        android:layout_above="@+id/light_container"
         android:rowCount="8"
         android:columnCount="8"
         >
     </GridLayout>
-    <GridLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/light_captured_layout"
-        android:background="@drawable/light_captured_background"
-        android:layout_centerHorizontal="true"
-        android:rowCount="2"
-        android:columnCount="8"
-        android:padding="5dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/light_container"
         android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
         >
-    </GridLayout>
+
+        <GridLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/light_captured_layout"
+            android:background="@drawable/light_captured_background"
+            android:layout_centerHorizontal="true"
+            android:rowCount="2"
+            android:columnCount="8"
+            android:padding="5dp"
+            >
+        </GridLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/light_check_textview"
+            android:text="CHECK"
+            style="@style/AudioFileInfoOverlayText"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
     <GridLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/whitePawnPromoteLayout"
         android:layout_centerHorizontal="true"
-        android:layout_above="@id/light_captured_layout"
+        android:layout_above="@id/light_container"
         android:rowCount="1"
         android:columnCount="4"
         android:translationX="-2000dp"
@@ -62,7 +103,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/blackPawnPromoteLayout"
-        android:layout_above="@id/light_captured_layout"
+        android:layout_above="@id/light_container"
         android:layout_centerHorizontal="true"
         android:rowCount="1"
         android:columnCount="4"
@@ -70,5 +111,6 @@
         android:background="@drawable/dark_captured_background"
         >
     </GridLayout>
+
 
 </RelativeLayout>
