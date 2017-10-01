@@ -14,7 +14,7 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
-        refreshPossibleMoves()
+        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -27,14 +27,14 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
 
-    override fun refreshPossibleMoves(){
+    override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
         for (i in 1.until(8)){//handle left forward diagonal
             if (row - i >= 0 && col - i >= 0){
-                if (mainActivity.gameState[row-i][col-i] != null && mainActivity.gameState[row-i][col-i]?.color == "white"){
+                if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "white"){
                     possibleMoves.add(Pair(row-i, col-i))
                     break
-                }else if (mainActivity.gameState[row-i][col-i] != null && mainActivity.gameState[row-i][col-i]?.color == "black"){
+                }else if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "black"){
                     break
                 }
                 possibleMoves.add(Pair(row-i, col-i))
@@ -42,10 +42,10 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         }
         for (j in 1.until(8)){//handle right forward diagonal
             if (row - j >= 0 && col + j < 8){
-                if (mainActivity.gameState[row-j][col+j] != null && mainActivity.gameState[row-j][col+j]?.color == "white"){
+                if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "white"){
                     possibleMoves.add(Pair(row-j, col+j))
                     break
-                }else if (mainActivity.gameState[row-j][col+j] != null && mainActivity.gameState[row-j][col+j]?.color == "black"){
+                }else if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "black"){
                     break
                 }
                 possibleMoves.add(Pair(row-j, col+j))
@@ -53,10 +53,10 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         }
         for (j in 1.until(8)){//handle right backwards diagonal
             if (row + j < 8 && col + j < 8){
-                if (mainActivity.gameState[row+j][col+j] != null && mainActivity.gameState[row+j][col+j]?.color == "white"){
+                if (gameState[row+j][col+j] != null && gameState[row+j][col+j]?.color == "white"){
                     possibleMoves.add(Pair(row+j, col+j))
                     break
-                }else if (mainActivity.gameState[row+j][col+j] != null && mainActivity.gameState[row+j][col+j]?.color == "black"){
+                }else if (gameState[row+j][col+j] != null && gameState[row+j][col+j]?.color == "black"){
                     break
                 }
                 possibleMoves.add(Pair(row+j, col+j))
@@ -64,10 +64,10 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         }
         for (j in 1.until(8)){//handle left back diagonal
             if (row + j < 8 && col - j >=0){
-                if (mainActivity.gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "white"){
+                if (gameState[row+j][col-j] != null && gameState[row+j][col-j]?.color == "white"){
                     possibleMoves.add(Pair(row+j, col-j))
                     break
-                }else if (mainActivity.gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "black"){
+                }else if (gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "black"){
                     break
                 }
                 possibleMoves.add(Pair(row+j, col-j))

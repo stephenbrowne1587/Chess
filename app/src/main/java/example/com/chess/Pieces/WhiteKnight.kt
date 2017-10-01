@@ -16,7 +16,7 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
 
-        refreshPossibleMoves()
+        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -28,45 +28,45 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
 
-    override fun refreshPossibleMoves(){
+    override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
         if (row-2 >= 0 && col-1 >= 0){
-            if(mainActivity.gameState[row-2][col-1] == null || mainActivity.gameState[row-2][col-1]?.color == "black"){
+            if(gameState[row-2][col-1] == null || gameState[row-2][col-1]?.color == "black"){
                 possibleMoves.add(Pair(row-2, col-1))
             }
         }
         if (row-2 >= 0 && col+1 < 8){
-            if(mainActivity.gameState[row-2][col+1] == null || mainActivity.gameState[row-2][col+1]?.color == "black"){
+            if(gameState[row-2][col+1] == null || gameState[row-2][col+1]?.color == "black"){
                 possibleMoves.add(Pair(row-2, col+1))
             }
         }
         if (row+2 <8  && col-1 >= 0){
-            if(mainActivity.gameState[row+2][col-1] == null || mainActivity.gameState[row+2][col-1]?.color == "black"){
+            if(gameState[row+2][col-1] == null || gameState[row+2][col-1]?.color == "black"){
                 possibleMoves.add(Pair(row+2, col-1))
             }
         }
         if (row+2 < 8 && col+1 < 8){
-            if(mainActivity.gameState[row+2][col+1] == null || mainActivity.gameState[row+2][col+1]?.color == "black"){
+            if(gameState[row+2][col+1] == null || gameState[row+2][col+1]?.color == "black"){
                 possibleMoves.add(Pair(row+2, col+1))
             }
         }
         if (row-1 >= 0 && col-2 >= 0){
-            if(mainActivity.gameState[row-1][col-2] == null || mainActivity.gameState[row-1][col-2]?.color == "black"){
+            if(gameState[row-1][col-2] == null || gameState[row-1][col-2]?.color == "black"){
                 possibleMoves.add(Pair(row-1, col-2))
             }
         }
         if (row-1 >= 0 && col+2 < 8){
-            if(mainActivity.gameState[row-1][col+2] == null || mainActivity.gameState[row-1][col+2]?.color == "black"){
+            if(gameState[row-1][col+2] == null || gameState[row-1][col+2]?.color == "black"){
                 possibleMoves.add(Pair(row-1, col+2))
             }
         }
         if (row+1 <8  && col-2 >= 0){
-            if(mainActivity.gameState[row+1][col-2] == null || mainActivity.gameState[row+1][col-2]?.color == "black"){
+            if(gameState[row+1][col-2] == null || gameState[row+1][col-2]?.color == "black"){
                 possibleMoves.add(Pair(row+1, col-2))
             }
         }
         if (row+1 < 8 && col+2 < 8){
-            if(mainActivity.gameState[row+1][col+2] == null || mainActivity.gameState[row+1][col+2]?.color == "black"){
+            if(gameState[row+1][col+2] == null || gameState[row+1][col+2]?.color == "black"){
                 possibleMoves.add(Pair(row+1, col+2))
             }
         }

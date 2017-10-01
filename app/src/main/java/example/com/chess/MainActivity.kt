@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import example.com.chess.Pieces.*
+import java.lang.reflect.Array.get
 
 class MainActivity : AppCompatActivity() {
     lateinit var board: GridLayout
@@ -385,7 +386,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck()// check if a king is in any pieces set of possible moves
+                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck(gameState)// check if a king is in any pieces set of possible moves
+                    val blocking = isBlocking()
                     if (attackerAndKingPair != null){
                         val attacker = attackerAndKingPair.first
                         val king = attackerAndKingPair.second
@@ -424,8 +426,24 @@ class MainActivity : AppCompatActivity() {
         resetBoard()
     }
 
+    fun Array<Array<ChessPiece?>>.copy() = Array(size) { get(it).clone() }
+
+
+    fun isBlocking(): Boolean{ // return true if the selected piece would cause the king to be in check if moved.
+        if (selectedSpot != null){
+
+            val tempGameState: Array<Array<ChessPiece?>> = gameState.copy()
+            tempGameState[selectedSpot!!.first][selectedSpot!!.second] = null
+            if (detectCheck(tempGameState) == null){
+                return false
+            }
+            return true
+        }
+        return false
+    }
+
     fun getBlockSpots(attacker: Pair<Int, Int>, king: Pair<Int, Int>): MutableSet<Pair<Int, Int>>{
-        var spots: MutableSet<Pair<Int, Int>> = mutableSetOf()
+        val spots: MutableSet<Pair<Int, Int>> = mutableSetOf()
         spots.add(Pair(attacker.first, attacker.second))
         for (j in 1.until(8)){//handle right
             if (attacker.second + j > 7){// check if out of bounds
@@ -516,18 +534,18 @@ class MainActivity : AppCompatActivity() {
         return mutableSetOf()
     }
 
-    fun detectCheck(): Pair<ChessPiece, ChessPiece>?{
-        for (boardRow in gameState){
+    fun detectCheck(gameStateVal: Array<Array<ChessPiece?>>): Pair<ChessPiece, ChessPiece>?{// If king is in check, return the spot of the attacker and the king.
+        for (boardRow in gameStateVal){
             for (piece in boardRow){
                 if (piece != null){
-                    piece.refreshPossibleMoves()
+                    piece.refreshPossibleMoves(gameStateVal)
                     for (move in piece.possibleMoves){
-                        if (gameState[move.first][move.second] != null && gameState[move.first][move.second] is WhiteKing){
+                        if (gameStateVal[move.first][move.second] != null && gameStateVal[move.first][move.second] is WhiteKing){
                             whiteInCheck = true
-                            return Pair(piece, gameState[move.first][move.second]!!)
-                        }else if (gameState[move.first][move.second] is BlackKing){
+                            return Pair(piece, gameStateVal[move.first][move.second]!!)
+                        }else if (gameStateVal[move.first][move.second] is BlackKing){
                             blackInCheck = true
-                            return Pair(piece, gameState[move.first][move.second]!!)
+                            return Pair(piece, gameStateVal[move.first][move.second]!!)
                         }
                     }
                 }

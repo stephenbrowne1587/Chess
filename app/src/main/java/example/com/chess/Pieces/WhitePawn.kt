@@ -19,7 +19,7 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
 
     override fun highlightPossibleMoves(){
 
-        refreshPossibleMoves()
+        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -31,18 +31,18 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override fun canMove(newRow: Int, newCol: Int): Boolean{
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
-    override fun refreshPossibleMoves(){
+    override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
-        if (row - 1 >= 0 && mainActivity.gameState[row-1][col] == null){
+        if (row - 1 >= 0 && gameState[row-1][col] == null){
             possibleMoves.add(Pair(row-1, col))
         }
-        if (isFirstMove && row - 2 >= 0 && mainActivity.gameState[row-2][col] == null){
+        if (isFirstMove && row - 2 >= 0 && gameState[row-2][col] == null){
             possibleMoves.add(Pair(row-2, col))
         }
-        if (col - 1 >= 0 && mainActivity.gameState[row-1][col-1]?.color == "black"){
+        if (col - 1 >= 0 && gameState[row-1][col-1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col-1))
         }
-        if (col + 1 < 8 && mainActivity.gameState[row-1][col+1]?.color == "black"){
+        if (col + 1 < 8 && gameState[row-1][col+1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col+1))
         }
         if (mainActivity.whiteInCheck){

@@ -16,7 +16,7 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     override fun highlightPossibleMoves(){
-        refreshPossibleMoves()
+        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -28,15 +28,15 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
 
-    override fun refreshPossibleMoves(){
+    override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
 
         for (j in 1.until(8)){//handle forward
             if (row - j >= 0){
-                if (mainActivity.gameState[row-j][col] != null && mainActivity.gameState[row-j][col]?.color == "black"){
+                if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "black"){
                     possibleMoves.add(Pair(row-j, col))
                     break
-                }else if (mainActivity.gameState[row-j][col] != null && mainActivity.gameState[row-j][col]?.color == "white"){
+                }else if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "white"){
                     break
                 }
                 possibleMoves.add(Pair(row-j, col))
@@ -44,10 +44,10 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         }
         for (j in 1.until(8)){//handle back
             if (row + j < 8){
-                if (mainActivity.gameState[row+j][col] != null && mainActivity.gameState[row+j][col]?.color == "black"){
+                if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "black"){
                     possibleMoves.add(Pair(row+j, col))
                     break
-                }else if (mainActivity.gameState[row+j][col] != null && mainActivity.gameState[row+j][col]?.color == "white"){
+                }else if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "white"){
                     break
                 }
                 possibleMoves.add(Pair(row+j, col))
@@ -55,10 +55,10 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         }
         for (j in 1.until(8)){//handle right
             if (col + j < 8){
-                if (mainActivity.gameState[row][col+j] != null && mainActivity.gameState[row][col+j]?.color == "black"){
+                if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "black"){
                     possibleMoves.add(Pair(row, col+j))
                     break
-                }else if (mainActivity.gameState[row][col+j] != null && mainActivity.gameState[row][col+j]?.color == "white"){
+                }else if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "white"){
                     break
                 }
                 possibleMoves.add(Pair(row, col+j))
@@ -66,10 +66,10 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         }
         for (j in 1.until(8)){//handle left
             if (col - j >= 0){
-                if (mainActivity.gameState[row][col-j] != null && mainActivity.gameState[row][col-j]?.color == "black"){
+                if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "black"){
                     possibleMoves.add(Pair(row, col-j))
                     break
-                }else if (mainActivity.gameState[row][col-j] != null && mainActivity.gameState[row][col-j]?.color == "white"){
+                }else if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "white"){
                     break
                 }
                 possibleMoves.add(Pair(row, col-j))
