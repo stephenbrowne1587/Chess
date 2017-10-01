@@ -36,6 +36,7 @@ abstract class ChessPiece(var mainActivity: MainActivity, var row: Int, var col:
     }
 
     abstract fun canMove(newRow: Int, newCol: Int): Boolean
+    abstract fun refreshPossibleMoves()
 
 
 

@@ -27,12 +27,11 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
     override fun canMove(newRow: Int, newCol: Int): Boolean{
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
-    fun refreshPossibleMoves(){
+    override fun refreshPossibleMoves(){
         possibleMoves.clear()
         for (j in 1.until(8)){//handle forward
             if (row - j >= 0){
                 if (mainActivity.gameState[row-j][col] != null && mainActivity.gameState[row-j][col]?.color == "black"){
-
                     possibleMoves.add(Pair(row-j, col))
                     break
                 }else if (mainActivity.gameState[row-j][col] != null && mainActivity.gameState[row-j][col]?.color == "white"){
@@ -45,8 +44,6 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         for (j in 1.until(8)){//handle back
             if (row + j < 8){
                 if (mainActivity.gameState[row+j][col] != null && mainActivity.gameState[row+j][col]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row+j, col))
                     break
                 }else if (mainActivity.gameState[row+j][col] != null && mainActivity.gameState[row+j][col]?.color == "white"){
@@ -111,8 +108,6 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         for (j in 1.until(8)){//handle right backwards diagonal
             if (row + j < 8 && col + j < 8){
                 if (mainActivity.gameState[row+j][col+j] != null && mainActivity.gameState[row+j][col+j]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col+j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row+j, col+j))
                     break
                 }else if (mainActivity.gameState[row+j][col+j] != null && mainActivity.gameState[row+j][col+j]?.color == "white"){
@@ -125,16 +120,16 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         for (j in 1.until(8)){//handle left back diagonal
             if (row + j < 8 && col - j >=0){
                 if (mainActivity.gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col-j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row+j, col-j))
                     break
                 }else if (mainActivity.gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "white"){
                     break
                 }
-
                 possibleMoves.add(Pair(row+j, col-j))
             }
+        }
+        if (mainActivity.whiteInCheck){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
 

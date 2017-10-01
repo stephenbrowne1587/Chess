@@ -16,33 +16,33 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     override fun highlightPossibleMoves(){
-        possibleMoves.clear()
-        if (row + 1 < 8 && mainActivity.gameState[row+1][col] == null){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+1}-${col}") as ImageView
+        refreshPossibleMoves()
+        for (move in possibleMoves){
+            val rowj = move.first
+            val colj = move.second
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${rowj}-${colj}") as ImageView
             nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(row+1, col))
-        }
-        if (isFirstMove && row + 2 >= 0 && mainActivity.gameState[row+2][col] == null){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+2}-${col}") as ImageView
-            nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(row+2, col))
-        }
-        if (col - 1 >= 0 && mainActivity.gameState[row+1][col-1]?.color == "white"){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+1}-${col-1}") as ImageView
-            nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(row+1, col-1))
-        }
-        if (col + 1 < 8 && mainActivity.gameState[row+1][col+1]?.color == "white"){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+1}-${col+1}") as ImageView
-            nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(row+1, col+1))
         }
     }
 
     override fun canMove(newRow: Int, newCol: Int): Boolean{
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
-
+    override fun refreshPossibleMoves(){
+        possibleMoves.clear()
+        if (row + 1 < 8 && mainActivity.gameState[row+1][col] == null){
+            possibleMoves.add(Pair(row+1, col))
+        }
+        if (isFirstMove && row + 2 >= 0 && mainActivity.gameState[row+2][col] == null){
+            possibleMoves.add(Pair(row+2, col))
+        }
+        if (col - 1 >= 0 && mainActivity.gameState[row+1][col-1]?.color == "white"){
+            possibleMoves.add(Pair(row+1, col-1))
+        }
+        if (col + 1 < 8 && mainActivity.gameState[row+1][col+1]?.color == "white"){
+            possibleMoves.add(Pair(row+1, col+1))
+        }
+    }
 
     override fun movePiece(newRow: Int, newCol: Int) {
         super.movePiece(newRow, newCol)

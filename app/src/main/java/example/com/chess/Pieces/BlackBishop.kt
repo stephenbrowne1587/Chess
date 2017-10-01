@@ -14,71 +14,65 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
+        refreshPossibleMoves()
+        for (move in possibleMoves){
+            val rowj = move.first
+            val colj = move.second
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${rowj}-${colj}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+        }
+    }
+
+    override fun canMove(newRow: Int, newCol: Int): Boolean{
+        return  possibleMoves.contains(Pair(newRow, newCol))
+    }
+
+    override fun refreshPossibleMoves(){
         possibleMoves.clear()
         for (i in 1.until(8)){//handle left forward diagonal
             if (row - i >= 0 && col - i >= 0){
                 if (mainActivity.gameState[row-i][col-i] != null && mainActivity.gameState[row-i][col-i]?.color == "white"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-i}-${col-i}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row-i, col-i))
                     break
                 }else if (mainActivity.gameState[row-i][col-i] != null && mainActivity.gameState[row-i][col-i]?.color == "black"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-i}-${col-i}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row-i, col-i))
             }
         }
         for (j in 1.until(8)){//handle right forward diagonal
             if (row - j >= 0 && col + j < 8){
                 if (mainActivity.gameState[row-j][col+j] != null && mainActivity.gameState[row-j][col+j]?.color == "white"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-j}-${col+j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row-j, col+j))
                     break
                 }else if (mainActivity.gameState[row-j][col+j] != null && mainActivity.gameState[row-j][col+j]?.color == "black"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-j}-${col+j}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row-j, col+j))
             }
         }
         for (j in 1.until(8)){//handle right backwards diagonal
             if (row + j < 8 && col + j < 8){
                 if (mainActivity.gameState[row+j][col+j] != null && mainActivity.gameState[row+j][col+j]?.color == "white"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col+j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row+j, col+j))
                     break
                 }else if (mainActivity.gameState[row+j][col+j] != null && mainActivity.gameState[row+j][col+j]?.color == "black"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col+j}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row+j, col+j))
             }
         }
         for (j in 1.until(8)){//handle left back diagonal
             if (row + j < 8 && col - j >=0){
                 if (mainActivity.gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "white"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col-j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row+j, col-j))
                     break
                 }else if (mainActivity.gameState[row+j][col-j] != null && mainActivity.gameState[row+j][col-j]?.color == "black"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col-j}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
-    }
-
-    override fun canMove(newRow: Int, newCol: Int): Boolean{
-        return  possibleMoves.contains(Pair(newRow, newCol))
     }
 
 

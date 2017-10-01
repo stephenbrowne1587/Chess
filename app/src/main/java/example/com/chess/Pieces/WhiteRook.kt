@@ -16,71 +16,68 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     override fun highlightPossibleMoves(){
+        refreshPossibleMoves()
+        for (move in possibleMoves){
+            val rowj = move.first
+            val colj = move.second
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${rowj}-${colj}") as ImageView
+            nextSpot.setBackgroundResource(R.drawable.circle2)
+        }
+    }
+    override fun canMove(newRow: Int, newCol: Int): Boolean{
+        return  possibleMoves.contains(Pair(newRow, newCol))
+    }
+
+    override fun refreshPossibleMoves(){
         possibleMoves.clear()
 
         for (j in 1.until(8)){//handle forward
             if (row - j >= 0){
                 if (mainActivity.gameState[row-j][col] != null && mainActivity.gameState[row-j][col]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-j}-${col}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row-j, col))
                     break
                 }else if (mainActivity.gameState[row-j][col] != null && mainActivity.gameState[row-j][col]?.color == "white"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row-j}-${col}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row-j, col))
             }
         }
         for (j in 1.until(8)){//handle back
             if (row + j < 8){
                 if (mainActivity.gameState[row+j][col] != null && mainActivity.gameState[row+j][col]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row+j, col))
                     break
                 }else if (mainActivity.gameState[row+j][col] != null && mainActivity.gameState[row+j][col]?.color == "white"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row+j}-${col}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row+j, col))
             }
         }
         for (j in 1.until(8)){//handle right
             if (col + j < 8){
                 if (mainActivity.gameState[row][col+j] != null && mainActivity.gameState[row][col+j]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row}-${col+j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row, col+j))
                     break
                 }else if (mainActivity.gameState[row][col+j] != null && mainActivity.gameState[row][col+j]?.color == "white"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row}-${col+j}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row, col+j))
             }
         }
         for (j in 1.until(8)){//handle left
             if (col - j >= 0){
                 if (mainActivity.gameState[row][col-j] != null && mainActivity.gameState[row][col-j]?.color == "black"){
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row}-${col-j}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
                     possibleMoves.add(Pair(row, col-j))
                     break
                 }else if (mainActivity.gameState[row][col-j] != null && mainActivity.gameState[row][col-j]?.color == "white"){
                     break
                 }
-                val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row}-${col-j}") as ImageView
-                nextSpot.setBackgroundResource(R.drawable.circle2)
                 possibleMoves.add(Pair(row, col-j))
             }
         }
-    }
-    override fun canMove(newRow: Int, newCol: Int): Boolean{
-        return  possibleMoves.contains(Pair(newRow, newCol))
+        if (mainActivity.whiteInCheck){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+        }
     }
 
 

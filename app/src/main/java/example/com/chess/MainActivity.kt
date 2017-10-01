@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     var pawnPromoteLayoutVisible = false
     var whiteInCheck = false
     var blackInCheck = false
+    var blockSpots: MutableSet<Pair<Int, Int>> = mutableSetOf()
+
     val capturedWhite: ArrayList<ChessPiece?> = arrayListOf()
     val capturedBlack: ArrayList<ChessPiece?> = arrayListOf()
 
@@ -382,6 +384,24 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+
+                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck()// check if a king is in any pieces set of possible moves
+                    if (attackerAndKingPair != null){
+                        val attacker = attackerAndKingPair.first
+                        val king = attackerAndKingPair.second
+                        blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
+                    }
+
+                    if (whiteInCheck){
+                        whiteCheckTextView.visibility = View.VISIBLE
+                    }else {
+                        whiteCheckTextView.visibility = View.GONE
+                    }
+                    if (blackInCheck){
+                        blackCheckTextView.visibility = View.VISIBLE
+                    }else{
+                        blackCheckTextView.visibility = View.GONE
+                    }
                 }
 
                 if (row % 2 == 0) {
@@ -403,6 +423,121 @@ class MainActivity : AppCompatActivity() {
         }
         resetBoard()
     }
+
+    fun getBlockSpots(attacker: Pair<Int, Int>, king: Pair<Int, Int>): MutableSet<Pair<Int, Int>>{
+        var spots: MutableSet<Pair<Int, Int>> = mutableSetOf()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle right
+            if (attacker.second + j > 7){// check if out of bounds
+                break
+            }else if (Pair(attacker.first, attacker.second + j) == king){
+                return spots
+            }else if (gameState[attacker.first][ attacker.second + j] == null){
+                spots.add(Pair(attacker.first, attacker.second + j))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle left
+            if (attacker.second - j < 0){// check if out of bounds
+                break
+            }else if (Pair(attacker.first, attacker.second - j) == king){
+                return spots
+            }else if (gameState[attacker.first][ attacker.second - j] == null){
+                spots.add(Pair(attacker.first, attacker.second - j))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle forward
+            if (attacker.first - j < 0){// check if out of bounds
+                break
+            }else if (Pair(attacker.first - j, attacker.second) == king){
+                return spots
+            }else if (gameState[attacker.first - j][ attacker.second] == null){
+                spots.add(Pair(attacker.first - j, attacker.second))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle backward
+            if (attacker.first + j > 7){// check if out of bounds
+                break
+            }else if (Pair(attacker.first + j, attacker.second) == king){
+                return spots
+            }else if (gameState[attacker.first + j][ attacker.second] == null){
+                spots.add(Pair(attacker.first + j, attacker.second))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle left forward diagonal
+            if (attacker.first - j < 0 || attacker.second - j < 0){// check if out of bounds
+                break
+            }else if (Pair(attacker.first - j, attacker.second - j) == king){
+                return spots
+            }else if (gameState[attacker.first - j][ attacker.second - j] == null){
+                spots.add(Pair(attacker.first - j, attacker.second - j))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle right forward diagonal
+            if (attacker.first - j < 0 || attacker.second + j > 7){// check if out of bounds
+                break
+            }else if (Pair(attacker.first - j, attacker.second + j) == king){
+                return spots
+            }else if (gameState[attacker.first - j][ attacker.second + j] == null){
+                spots.add(Pair(attacker.first - j, attacker.second + j))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle right backwards diagonal
+            if (attacker.first + j < 0 || attacker.second + j > 7){// check if out of bounds
+                break
+            }else if (Pair(attacker.first + j, attacker.second + j) == king){
+                return spots
+            }else if (gameState[attacker.first + j][ attacker.second + j] == null){
+                spots.add(Pair(attacker.first + j, attacker.second + j))
+            }
+        }
+        spots.clear()
+        spots.add(Pair(attacker.first, attacker.second))
+        for (j in 1.until(8)){//handle left backwards diagonal
+            if (attacker.first + j < 0 || attacker.second - j < 0){// check if out of bounds
+                break
+            }else if (Pair(attacker.first + j, attacker.second - j) == king){
+                return spots
+            }else if (gameState[attacker.first + j][ attacker.second - j] == null){
+                spots.add(Pair(attacker.first + j, attacker.second - j))
+            }
+        }
+        return mutableSetOf()
+    }
+
+    fun detectCheck(): Pair<ChessPiece, ChessPiece>?{
+        for (boardRow in gameState){
+            for (piece in boardRow){
+                if (piece != null){
+                    piece.refreshPossibleMoves()
+                    for (move in piece.possibleMoves){
+                        if (gameState[move.first][move.second] != null && gameState[move.first][move.second] is WhiteKing){
+                            whiteInCheck = true
+                            return Pair(piece, gameState[move.first][move.second]!!)
+                        }else if (gameState[move.first][move.second] is BlackKing){
+                            blackInCheck = true
+                            return Pair(piece, gameState[move.first][move.second]!!)
+                        }
+                    }
+                }
+            }
+        }
+        whiteInCheck = false
+        blackInCheck = false
+        return null
+    }
+
     fun unhighlightBoard(){
         for (i in 0..7){
             for (j in 0..7){

@@ -15,78 +15,67 @@ class WhiteKing (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
-        possibleMoves.clear()
-            if (row - 1 >= 0){
-                if (mainActivity.gameState[row-1][col] == null || mainActivity.gameState[row-1][col]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row - 1}-${col}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row - 1, col))
-                }
-            }
-            if (row + 1 < 8){
-                if (mainActivity.gameState[row+1][col] == null || mainActivity.gameState[row+1][col]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row + 1}-${col}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row + 1, col))
-                }
-            }
-            if (col + 1 < 8){
-                if (mainActivity.gameState[row][col+1] == null || mainActivity.gameState[row][col+1]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row}-${col + 1}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row, col + 1))
-                }
-            }
-            if (col - 1 >= 0){
-                if (mainActivity.gameState[row][col-1] == null || mainActivity.gameState[row][col-1]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row}-${col - 1}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row, col - 1))
-                }
-            }
-            if (row - 1 >= 0 && col - 1 >= 0){
-                if (mainActivity.gameState[row-1][col-1] == null || mainActivity.gameState[row-1][col-1]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row - 1}-${col - 1}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row - 1, col - 1))
-                }
-            }
-            if (row - 1 >= 0 && col + 1 < 8){
-                if (mainActivity.gameState[row-1][col+1] == null || mainActivity.gameState[row-1][col+1]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row - 1}-${col + 1}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row - 1, col + 1))
-                }
-            }
-
-            if (row + 1 < 8 && col + 1 < 8){
-                if (mainActivity.gameState[row+1][col+1] == null || mainActivity.gameState[row+1][col+1]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row + 1}-${col + 1}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row + 1, col + 1))
-                }
-            }
-
-            if (row + 1 < 8 && col - 1 >=0){
-                if (mainActivity.gameState[row+1][col-1] == null || mainActivity.gameState[row+1][col-1]?.color == "black") {
-                    val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${row + 1}-${col - 1}") as ImageView
-                    nextSpot.setBackgroundResource(R.drawable.circle2)
-                    possibleMoves.add(Pair(row + 1, col - 1))
-                }
-            }
-        if (canCastleShort()){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${7}-${6}") as ImageView
+        refreshPossibleMoves()
+        for (move in possibleMoves){
+            val rowj = move.first
+            val colj = move.second
+            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${rowj}-${colj}") as ImageView
             nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(7, 6))
-        }
-        if (canCastleLong()){
-            val nextSpot: ImageView = mainActivity.board.findViewWithTag("overlay:${7}-${2}") as ImageView
-            nextSpot.setBackgroundResource(R.drawable.circle2)
-            possibleMoves.add(Pair(7, 2))
         }
     }
     override fun canMove(newRow: Int, newCol: Int): Boolean{
         return  possibleMoves.contains(Pair(newRow, newCol))
+    }
+
+    override fun refreshPossibleMoves(){
+        possibleMoves.clear()
+        if (row - 1 >= 0){
+            if (mainActivity.gameState[row-1][col] == null || mainActivity.gameState[row-1][col]?.color == "black") {
+                possibleMoves.add(Pair(row - 1, col))
+            }
+        }
+        if (row + 1 < 8){
+            if (mainActivity.gameState[row+1][col] == null || mainActivity.gameState[row+1][col]?.color == "black") {
+                possibleMoves.add(Pair(row + 1, col))
+            }
+        }
+        if (col + 1 < 8){
+            if (mainActivity.gameState[row][col+1] == null || mainActivity.gameState[row][col+1]?.color == "black") {
+                possibleMoves.add(Pair(row, col + 1))
+            }
+        }
+        if (col - 1 >= 0){
+            if (mainActivity.gameState[row][col-1] == null || mainActivity.gameState[row][col-1]?.color == "black") {
+                possibleMoves.add(Pair(row, col - 1))
+            }
+        }
+        if (row - 1 >= 0 && col - 1 >= 0){
+            if (mainActivity.gameState[row-1][col-1] == null || mainActivity.gameState[row-1][col-1]?.color == "black") {
+                possibleMoves.add(Pair(row - 1, col - 1))
+            }
+        }
+        if (row - 1 >= 0 && col + 1 < 8){
+            if (mainActivity.gameState[row-1][col+1] == null || mainActivity.gameState[row-1][col+1]?.color == "black") {
+                possibleMoves.add(Pair(row - 1, col + 1))
+            }
+        }
+        if (row + 1 < 8 && col + 1 < 8){
+            if (mainActivity.gameState[row+1][col+1] == null || mainActivity.gameState[row+1][col+1]?.color == "black") {
+                possibleMoves.add(Pair(row + 1, col + 1))
+            }
+        }
+        if (row + 1 < 8 && col - 1 >=0){
+            if (mainActivity.gameState[row+1][col-1] == null || mainActivity.gameState[row+1][col-1]?.color == "black") {
+                possibleMoves.add(Pair(row + 1, col - 1))
+            }
+        }
+        if (canCastleShort()){
+            possibleMoves.add(Pair(7, 6))
+        }
+        if (canCastleLong()){
+            possibleMoves.add(Pair(7, 2))
+        }
+
     }
 
     override fun movePiece(newRow: Int, newCol: Int) {
