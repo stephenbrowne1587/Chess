@@ -103,6 +103,8 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         newSpot.setImageResource(R.drawable.blackking)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
     fun canCastleLong(): Boolean {
         if (mainActivity.gameState[0][0] != null && mainActivity.gameState[0][0] is BlackRook) {

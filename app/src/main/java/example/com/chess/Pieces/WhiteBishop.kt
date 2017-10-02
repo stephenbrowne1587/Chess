@@ -73,7 +73,7 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
-        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -92,6 +92,8 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
         newSpot.setImageResource(R.drawable.whitebishop)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 

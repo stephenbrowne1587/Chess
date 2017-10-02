@@ -99,6 +99,8 @@ class WhiteKing (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
 
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
 
     }
 

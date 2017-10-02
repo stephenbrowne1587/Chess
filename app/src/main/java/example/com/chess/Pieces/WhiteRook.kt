@@ -75,7 +75,7 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                 possibleMoves.add(Pair(row, col-j))
             }
         }
-        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -95,6 +95,8 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         newSpot.setImageResource(R.drawable.whiterook)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
 
     }
 

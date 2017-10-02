@@ -70,7 +70,7 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 possibleMoves.add(Pair(row+1, col+2))
             }
         }
-        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -88,6 +88,8 @@ class WhiteKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         newSpot.setImageResource(R.drawable.whiteknight)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 

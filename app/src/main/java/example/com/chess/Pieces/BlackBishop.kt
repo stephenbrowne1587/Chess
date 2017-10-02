@@ -73,7 +73,7 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
-        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }

@@ -128,7 +128,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
-        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -146,6 +146,8 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         newSpot.setImageResource(R.drawable.whitequeen)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 

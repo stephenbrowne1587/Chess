@@ -74,7 +74,7 @@ class BlackRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                 possibleMoves.add(Pair(row, col-j))
             }
         }
-        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -94,6 +94,8 @@ class BlackRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         newSpot.setImageResource(R.drawable.blackrook)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 

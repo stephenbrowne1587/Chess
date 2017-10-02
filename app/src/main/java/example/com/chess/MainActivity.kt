@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity() {
     var pawnPromoteLayoutVisible = false
     var whiteInCheck = false
     var blackInCheck = false
-    var isBlocking = false
+    var isBlockingBlack = false
+    var isBlockingWhite = false
     var blockSpots: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     val capturedWhite: ArrayList<ChessPiece?> = arrayListOf()
@@ -366,11 +367,18 @@ class MainActivity : AppCompatActivity() {
                 space.tag = "space:$row-$col"
                 overlay.tag = "overlay:$row-$col"
                 space.setOnClickListener {
-                    isBlocking = false
-                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck(gameState)// check if a king is in any pieces set of possible moves
+                    isBlockingBlack = false
+                    isBlockingWhite = false
+
                     val attackerAndKingPairThreat: Pair<ChessPiece, ChessPiece>? =  detectThreat(gameState, Pair(row, col)) // check if the king is in any pieces possible moves if the selected piece were removed.
-                    if (attackerAndKingPairThreat != null){
-                        isBlocking = true
+                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck(gameState)// check if a king is in any pieces set of possible moves
+                    if (attackerAndKingPairThreat != null && attackerAndKingPairThreat.second is WhiteKing){
+                        isBlockingWhite = true
+                        val attacker = attackerAndKingPairThreat.first
+                        val king = attackerAndKingPairThreat.second
+                        blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
+                    }else if (attackerAndKingPairThreat != null && attackerAndKingPairThreat.second is BlackKing){
+                        isBlockingBlack = true
                         val attacker = attackerAndKingPairThreat.first
                         val king = attackerAndKingPairThreat.second
                         blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
@@ -512,7 +520,7 @@ class MainActivity : AppCompatActivity() {
                 break
             }else if (Pair(attacker.first + j, attacker.second + j) == king){
                 return spots
-            }else if (gameState[attacker.first + j][ attacker.second + j] == null){
+            }else if (attacker.first + j < 8 && attacker.second + j < 8 && gameState[attacker.first + j][ attacker.second + j] == null){
                 spots.add(Pair(attacker.first + j, attacker.second + j))
             }
         }
@@ -523,11 +531,11 @@ class MainActivity : AppCompatActivity() {
                 break
             }else if (Pair(attacker.first + j, attacker.second - j) == king){
                 return spots
-            }else if (gameState[attacker.first + j][ attacker.second - j] == null){
+            }else if (attacker.first + j < 8 && attacker.second - j >= 0 && gameState[attacker.first + j][ attacker.second - j] == null){
                 spots.add(Pair(attacker.first + j, attacker.second - j))
             }
         }
-        return mutableSetOf()
+        return mutableSetOf(Pair(attacker.first, attacker.second))
     }
 
     fun detectThreat(gameStateVal: Array<Array<ChessPiece?>>, spot: Pair<Int, Int>):Pair<ChessPiece, ChessPiece>?{

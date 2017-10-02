@@ -36,15 +36,16 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         if (isFirstMove && row + 2 >= 0 && gameState[row+2][col] == null){
             possibleMoves.add(Pair(row+2, col))
         }
-        if (col - 1 >= 0 && gameState[row+1][col-1]?.color == "white"){
+        if (row + 1 < 8 && col - 1 >= 0 && gameState[row+1][col-1]?.color == "white"){
             possibleMoves.add(Pair(row+1, col-1))
         }
-        if (col + 1 < 8 && gameState[row+1][col+1]?.color == "white"){
+        if (row + 1 < 8 && col + 1 < 8 && gameState[row+1][col+1]?.color == "white"){
             possibleMoves.add(Pair(row+1, col+1))
         }
-        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
+
     }
 
     override fun movePiece(newRow: Int, newCol: Int) {
@@ -61,6 +62,8 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         newSpot.setImageResource(R.drawable.blackpawn)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 

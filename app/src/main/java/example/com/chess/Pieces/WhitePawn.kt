@@ -39,13 +39,13 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         if (isFirstMove && row - 2 >= 0 && gameState[row-2][col] == null){
             possibleMoves.add(Pair(row-2, col))
         }
-        if (col - 1 >= 0 && gameState[row-1][col-1]?.color == "black"){
+        if (row - 1 >= 0 && col - 1 >= 0 && gameState[row-1][col-1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col-1))
         }
-        if (col + 1 < 8 && gameState[row-1][col+1]?.color == "black"){
+        if (row - 1 >= 0 && col + 1 < 8 && gameState[row-1][col+1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col+1))
         }
-        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -64,6 +64,8 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         newSpot.setImageResource(R.drawable.whitepawn)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 

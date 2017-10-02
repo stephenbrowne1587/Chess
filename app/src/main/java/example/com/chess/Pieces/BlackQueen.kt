@@ -121,7 +121,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
-        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
@@ -140,6 +140,8 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
         newSpot.setImageResource(R.drawable.blackqueen)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
     }
 
 
