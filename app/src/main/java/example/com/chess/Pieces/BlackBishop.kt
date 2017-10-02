@@ -73,6 +73,9 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
+        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+        }
     }
 
 
@@ -90,6 +93,8 @@ class BlackBishop(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         newSpot.setImageResource(R.drawable.blackbishop)
         this.row = newRow
         this.col = newCol
+        mainActivity.detectCheck(mainActivity.gameState)
+        mainActivity.setCheckWarning()
 
     }
 

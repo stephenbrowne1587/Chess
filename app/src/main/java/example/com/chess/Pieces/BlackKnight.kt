@@ -70,6 +70,9 @@ class BlackKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 possibleMoves.add(Pair(row+1, col+2))
             }
         }
+        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+        }
 
     }
 

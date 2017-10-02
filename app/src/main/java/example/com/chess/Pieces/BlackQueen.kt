@@ -121,6 +121,9 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
+        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+        }
     }
 
 

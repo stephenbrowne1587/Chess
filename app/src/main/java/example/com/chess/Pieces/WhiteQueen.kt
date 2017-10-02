@@ -128,7 +128,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 possibleMoves.add(Pair(row+j, col-j))
             }
         }
-        if (mainActivity.whiteInCheck){
+        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }

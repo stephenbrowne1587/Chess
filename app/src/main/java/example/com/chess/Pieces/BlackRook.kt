@@ -74,6 +74,9 @@ class BlackRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                 possibleMoves.add(Pair(row, col-j))
             }
         }
+        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+        }
     }
 
 

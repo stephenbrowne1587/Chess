@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     var pawnPromoteLayoutVisible = false
     var whiteInCheck = false
     var blackInCheck = false
+    var isBlocking = false
     var blockSpots: MutableSet<Pair<Int, Int>> = mutableSetOf()
 
     val capturedWhite: ArrayList<ChessPiece?> = arrayListOf()
@@ -365,6 +366,20 @@ class MainActivity : AppCompatActivity() {
                 space.tag = "space:$row-$col"
                 overlay.tag = "overlay:$row-$col"
                 space.setOnClickListener {
+                    isBlocking = false
+                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck(gameState)// check if a king is in any pieces set of possible moves
+                    val attackerAndKingPairThreat: Pair<ChessPiece, ChessPiece>? =  detectThreat(gameState, Pair(row, col)) // check if the king is in any pieces possible moves if the selected piece were removed.
+                    if (attackerAndKingPairThreat != null){
+                        isBlocking = true
+                        val attacker = attackerAndKingPairThreat.first
+                        val king = attackerAndKingPairThreat.second
+                        blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
+                    }
+                    if (attackerAndKingPair != null){
+                        val attacker = attackerAndKingPair.first
+                        val king = attackerAndKingPair.second
+                        blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
+                    }
                     if (!pawnPromoteLayoutVisible){// Any condition that would cause the board to be disabled.
                         unhighlightBoard()
                         if (selectedSpot == null){//If there is no selected spot
@@ -385,25 +400,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-
-                    val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck(gameState)// check if a king is in any pieces set of possible moves
-                    val blocking = isBlocking()
-                    if (attackerAndKingPair != null){
-                        val attacker = attackerAndKingPair.first
-                        val king = attackerAndKingPair.second
-                        blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
-                    }
-
-                    if (whiteInCheck){
-                        whiteCheckTextView.visibility = View.VISIBLE
-                    }else {
-                        whiteCheckTextView.visibility = View.GONE
-                    }
-                    if (blackInCheck){
-                        blackCheckTextView.visibility = View.VISIBLE
-                    }else{
-                        blackCheckTextView.visibility = View.GONE
-                    }
+                    setCheckWarning()
                 }
 
                 if (row % 2 == 0) {
@@ -425,22 +422,21 @@ class MainActivity : AppCompatActivity() {
         }
         resetBoard()
     }
+    fun setCheckWarning(){
+        if (whiteInCheck){
+            whiteCheckTextView.visibility = View.VISIBLE
+        }else {
+            whiteCheckTextView.visibility = View.GONE
+        }
+        if (blackInCheck){
+            blackCheckTextView.visibility = View.VISIBLE
+        }else{
+            blackCheckTextView.visibility = View.GONE
+        }
+    }
 
     fun Array<Array<ChessPiece?>>.copy() = Array(size) { get(it).clone() }
 
-
-    fun isBlocking(): Boolean{ // return true if the selected piece would cause the king to be in check if moved.
-        if (selectedSpot != null){
-
-            val tempGameState: Array<Array<ChessPiece?>> = gameState.copy()
-            tempGameState[selectedSpot!!.first][selectedSpot!!.second] = null
-            if (detectCheck(tempGameState) == null){
-                return false
-            }
-            return true
-        }
-        return false
-    }
 
     fun getBlockSpots(attacker: Pair<Int, Int>, king: Pair<Int, Int>): MutableSet<Pair<Int, Int>>{
         val spots: MutableSet<Pair<Int, Int>> = mutableSetOf()
@@ -534,7 +530,27 @@ class MainActivity : AppCompatActivity() {
         return mutableSetOf()
     }
 
-    fun detectCheck(gameStateVal: Array<Array<ChessPiece?>>): Pair<ChessPiece, ChessPiece>?{// If king is in check, return the spot of the attacker and the king.
+    fun detectThreat(gameStateVal: Array<Array<ChessPiece?>>, spot: Pair<Int, Int>):Pair<ChessPiece, ChessPiece>?{
+        val tempGameState: Array<Array<ChessPiece?>> = gameStateVal.copy()
+        tempGameState[spot.first][spot.second] = null
+        for (boardRow in tempGameState){
+            for (piece in boardRow){
+                if (piece != null){
+                    piece.refreshPossibleMoves(tempGameState)
+                    for (move in piece.possibleMoves){
+                        if (tempGameState[move.first][move.second] != null && tempGameState[move.first][move.second] is WhiteKing){
+                            return Pair(piece, tempGameState[move.first][move.second]!!)
+                        }else if (tempGameState[move.first][move.second] is BlackKing){
+                            return Pair(piece, tempGameState[move.first][move.second]!!)
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    fun detectCheck(gameStateVal: Array<Array<ChessPiece?>>): Pair<ChessPiece, ChessPiece>?{// If king is in check, return the attacker and the king.
         for (boardRow in gameStateVal){
             for (piece in boardRow){
                 if (piece != null){

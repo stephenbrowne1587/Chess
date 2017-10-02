@@ -42,6 +42,9 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         if (col + 1 < 8 && gameState[row+1][col+1]?.color == "white"){
             possibleMoves.add(Pair(row+1, col+1))
         }
+        if (mainActivity.blackInCheck || mainActivity.isBlocking){
+            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+        }
     }
 
     override fun movePiece(newRow: Int, newCol: Int) {

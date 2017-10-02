@@ -33,6 +33,7 @@ abstract class ChessPiece(var mainActivity: MainActivity, var row: Int, var col:
         mainActivity.lastMove = Pair(newRow, newCol)
 
 
+
     }
 
     abstract fun canMove(newRow: Int, newCol: Int): Boolean

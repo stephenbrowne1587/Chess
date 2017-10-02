@@ -45,7 +45,7 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         if (col + 1 < 8 && gameState[row-1][col+1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col+1))
         }
-        if (mainActivity.whiteInCheck){
+        if (mainActivity.whiteInCheck || mainActivity.isBlocking){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
     }
