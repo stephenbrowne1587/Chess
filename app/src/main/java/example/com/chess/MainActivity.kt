@@ -208,6 +208,8 @@ class MainActivity : AppCompatActivity() {
         blackPawnPromoteLayout.translationX = -2000f
         whitePawnPromoteLayout.translationX = -2000f
         pawnPromoteLayoutVisible = false
+        detectCheck(gameState)
+        setCheckWarning()
     }
     fun showWhitePawnPromoteLayout(){
         pawnPromoteLayoutVisible = true
@@ -387,6 +389,7 @@ class MainActivity : AppCompatActivity() {
                         val attacker = attackerAndKingPair.first
                         val king = attackerAndKingPair.second
                         blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
+                        filterKingInCheckMoves(Pair(attacker.row, attacker.col),  Pair(king.row, king.col))
                     }
                     if (!pawnPromoteLayoutVisible){// Any condition that would cause the board to be disabled.
                         unhighlightBoard()
@@ -444,6 +447,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun Array<Array<ChessPiece?>>.copy() = Array(size) { get(it).clone() }
+
+    fun filterKingInCheckMoves(attacker: Pair<Int, Int>, king: Pair<Int, Int>) {
+        val thisKing = gameState[king.first][king.second]
+        for (row in gameState) {
+            for (piece in row) {
+                if (piece != null && piece.color != thisKing?.color) {
+                    thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves }!!.toMutableSet()
+                }
+            }
+
+        }
+        println(thisKing?.possibleMoves)
+    }
 
 
     fun getBlockSpots(attacker: Pair<Int, Int>, king: Pair<Int, Int>): MutableSet<Pair<Int, Int>>{
