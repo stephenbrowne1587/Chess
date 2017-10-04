@@ -15,7 +15,6 @@ class BlackKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
 
-        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second

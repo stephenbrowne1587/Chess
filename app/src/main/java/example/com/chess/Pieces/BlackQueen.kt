@@ -15,7 +15,6 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
 
-        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second

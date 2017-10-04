@@ -290,12 +290,17 @@ class MainActivity : AppCompatActivity() {
         val selectedPiece: ChessPiece = gameState[row][col]!!
         selectedSpot = Pair(row, col)
         selectedPiece.mainActivity = this
-        selectedPiece.highlightPossibleMoves()
+        selectedPiece.refreshPossibleMoves(gameState)
         if (selectedPiece.possibleMoves.isNotEmpty()){//only allow a piece to be selected if it can move somewhere
+            selectedPiece.highlightPossibleMoves()
             selectedPiece.highlightSelectedSpace()
+
+
         }else{
             selectedSpot = null
         }
+
+
     }
     fun capturePiece(piece: ChessPiece){
         Log.i("piece captured", piece.color + " piece captured")
@@ -389,7 +394,7 @@ class MainActivity : AppCompatActivity() {
                         val attacker = attackerAndKingPair.first
                         val king = attackerAndKingPair.second
                         blockSpots = getBlockSpots(Pair(attacker.row, attacker.col), Pair(king.row, king.col))
-                        filterKingInCheckMoves(Pair(attacker.row, attacker.col),  Pair(king.row, king.col))
+                        filterKingInCheckMoves(Pair(king.row, king.col))
                     }
                     if (!pawnPromoteLayoutVisible){// Any condition that would cause the board to be disabled.
                         unhighlightBoard()
@@ -448,12 +453,21 @@ class MainActivity : AppCompatActivity() {
 
     fun Array<Array<ChessPiece?>>.copy() = Array(size) { get(it).clone() }
 
-    fun filterKingInCheckMoves(attacker: Pair<Int, Int>, king: Pair<Int, Int>) {
+    fun filterKingInCheckMoves(king: Pair<Int, Int>) {
         val thisKing = gameState[king.first][king.second]
+        val tempGameState = gameState.copy()
+        tempGameState[king.first][king.second] = null
         for (row in gameState) {
             for (piece in row) {
                 if (piece != null && piece.color != thisKing?.color) {
-                    thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves }!!.toMutableSet()
+                    piece.refreshPossibleMoves(tempGameState)
+                    if (piece is WhitePawn || piece is BlackPawn){//do not remove pawns forward move since they cannot attack with it
+                        thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves || piece.col == it.second}!!.toMutableSet()
+                    }else{
+                        thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves }!!.toMutableSet()
+                    }
+
+//                    piece.refreshPossibleMoves(gameState)
                 }
             }
 

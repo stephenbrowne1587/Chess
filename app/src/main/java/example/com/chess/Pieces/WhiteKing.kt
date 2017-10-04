@@ -15,7 +15,6 @@ class WhiteKing (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
-        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -74,6 +73,10 @@ class WhiteKing (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
         }
         if (canCastleLong()){
             possibleMoves.add(Pair(7, 2))
+        }
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
+//            possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
+            mainActivity.filterKingInCheckMoves(Pair(this.row, this.col))
         }
 
     }

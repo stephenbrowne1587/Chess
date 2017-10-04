@@ -19,7 +19,6 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
 
     override fun highlightPossibleMoves(){
 
-        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second

@@ -16,7 +16,6 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
     override fun highlightPossibleMoves(){
 
-        refreshPossibleMoves(mainActivity.gameState)
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -78,6 +77,10 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         }
         if (canCastleLong()){
             possibleMoves.add(Pair(0, 2))
+        }
+        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
+            mainActivity.filterKingInCheckMoves(Pair(this.row, this.col))
+
         }
 
     }
