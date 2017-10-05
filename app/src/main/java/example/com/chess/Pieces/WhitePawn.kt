@@ -40,9 +40,13 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         }
         if (row - 1 >= 0 && col - 1 >= 0 && gameState[row-1][col-1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col-1))
+        }else if (row - 1 >= 0 && col - 1 >= 0 && gameState[row-1][col-1]?.color == "white"){
+            gameState[row-1][col-1]?.isProtected = true
         }
         if (row - 1 >= 0 && col + 1 < 8 && gameState[row-1][col+1]?.color == "black"){
             possibleMoves.add(Pair(row-1, col+1))
+        }else if (row - 1 >= 0 && col + 1 < 8 && gameState[row-1][col+1]?.color == "white"){
+            gameState[row-1][col+1]?.isProtected = true
         }
         if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()

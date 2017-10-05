@@ -355,6 +355,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    fun resetProtected(){
+        for (row in gameState){
+            for (piece in row){
+                if (piece != null){
+                    piece.isProtected = false
+                }
+            }
+        }
+    }
 
     private fun createBoard(width: Int) {
         for (row in 0..7) {
@@ -376,6 +385,7 @@ class MainActivity : AppCompatActivity() {
                 space.setOnClickListener {
                     isBlockingBlack = false
                     isBlockingWhite = false
+                    resetProtected()
 
                     val attackerAndKingPairThreat: Pair<ChessPiece, ChessPiece>? =  detectThreat(gameState, Pair(row, col)) // check if the king is in any pieces possible moves if the selected piece were removed.
                     val attackerAndKingPair: Pair<ChessPiece, ChessPiece>? =  detectCheck(gameState)// check if a king is in any pieces set of possible moves
@@ -404,6 +414,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }else{
                             val selectedPiece: ChessPiece = gameState[selectedSpot!!.first][selectedSpot!!.second]!!
+                            selectedPiece.refreshPossibleMoves(gameState)
                             if (selectedSpot == Pair(row, col)){//If the user tapped on the spot that was already selected
                                 selectedSpot = null
                             }else if (gameState[row][col]?.color == selectedPiece.color){//If the user wants to switch selection to another piece
@@ -417,6 +428,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     setCheckWarning()
+
                 }
 
                 if (row % 2 == 0) {
@@ -437,6 +449,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
         resetBoard()
+    }
+    fun detectCheckmate(){
+        if (whiteInCheck){
+            var isCheckmate = true
+            gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
+            gameState.flatten().map { if (it != null && it.color == "white" && it.possibleMoves.isNotEmpty()) isCheckmate = false  }
+            if (isCheckmate){
+                Toast.makeText(this, "CHECKMATE", Toast.LENGTH_LONG).show()
+            }
+        }else{
+            var isCheckmate = true
+            gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
+            gameState.flatten().map { if (it != null && it.color == "black" && it.possibleMoves.isNotEmpty()) isCheckmate = false  }
+            if (isCheckmate){
+                Toast.makeText(this, "CHECKMATE", Toast.LENGTH_LONG).show()
+            }
+        }
     }
     fun setCheckWarning(){
         if (whiteInCheck){
@@ -459,7 +488,7 @@ class MainActivity : AppCompatActivity() {
         tempGameState[king.first][king.second] = null
         for (row in gameState) {
             for (piece in row) {
-                if (piece != null && piece.color != thisKing?.color) {
+                if (piece != null && piece.color != thisKing?.color && piece !is WhiteKing && piece !is BlackKing) {
                     piece.refreshPossibleMoves(tempGameState)
                     if (piece is WhitePawn || piece is BlackPawn){//do not remove pawns forward move since they cannot attack with it
                         thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves || piece.col == it.second}!!.toMutableSet()
@@ -472,7 +501,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        println(thisKing?.possibleMoves)
+//        println(thisKing?.possibleMoves)
     }
 
 

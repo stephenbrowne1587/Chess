@@ -12,6 +12,7 @@ abstract class ChessPiece(var mainActivity: MainActivity, var row: Int, var col:
 
     abstract val color: String
     abstract var possibleMoves: MutableSet<Pair<Int, Int>>
+    var isProtected = false
 
     fun highlightSelectedSpace(){
         val selectedSpot: ImageView = mainActivity.board.findViewWithTag("overlay:$row-$col") as ImageView
@@ -31,6 +32,7 @@ abstract class ChessPiece(var mainActivity: MainActivity, var row: Int, var col:
         }
 
         mainActivity.lastMove = Pair(newRow, newCol)
+
 
 
 

@@ -37,9 +37,13 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         }
         if (row + 1 < 8 && col - 1 >= 0 && gameState[row+1][col-1]?.color == "white"){
             possibleMoves.add(Pair(row+1, col-1))
+        }else if (row + 1 < 8 && col - 1 >= 0 && gameState[row+1][col-1]?.color == "black"){
+            gameState[row+1][col-1]?.isProtected = true
         }
         if (row + 1 < 8 && col + 1 < 8 && gameState[row+1][col+1]?.color == "white"){
             possibleMoves.add(Pair(row+1, col+1))
+        }else if (row + 1 < 8 && col + 1 < 8 && gameState[row+1][col+1]?.color == "black"){
+            gameState[row+1][col+1]?.isProtected = true
         }
         if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()

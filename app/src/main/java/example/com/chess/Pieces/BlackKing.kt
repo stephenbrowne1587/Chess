@@ -31,45 +31,61 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
         if (row - 1 >= 0){
-            if (gameState[row-1][col] == null || gameState[row-1][col]?.color == "white") {
+            if (gameState[row-1][col] == null || (gameState[row-1][col]?.color == "white" && gameState[row-1][col]?.isProtected == false)) {
                 possibleMoves.add(Pair(row - 1, col))
+            }else if (gameState[row-1][col]?.color == "black"){
+                gameState[row-1][col]?.isProtected = true
             }
         }
         if (row + 1 < 8){
-            if (gameState[row+1][col] == null || gameState[row+1][col]?.color == "white") {
+            if (gameState[row+1][col] == null || (gameState[row+1][col]?.color == "white" && gameState[row+1][col]?.isProtected == false)) {
                 possibleMoves.add(Pair(row + 1, col))
+            }else if (gameState[row+1][col]?.color == "black"){
+                gameState[row+1][col]?.isProtected = true
             }
         }
         if (col + 1 < 8){
-            if (gameState[row][col+1] == null || gameState[row][col+1]?.color == "white") {
+            if (gameState[row][col+1] == null || (gameState[row][col+1]?.color == "white" && gameState[row][col+1]?.isProtected == false)) {
                 possibleMoves.add(Pair(row, col + 1))
+            }else if (gameState[row][col+1]?.color == "black"){
+                gameState[row][col+1]?.isProtected = true
             }
         }
         if (col - 1 >= 0){
-            if (gameState[row][col-1] == null || gameState[row][col-1]?.color == "white") {
+            if (gameState[row][col-1] == null || (gameState[row][col-1]?.color == "white" && gameState[row][col-1]?.isProtected == false)) {
                 possibleMoves.add(Pair(row, col - 1))
+            }else if (gameState[row][col-1]?.color == "black"){
+                gameState[row][col-1]?.isProtected = true
             }
         }
         if (row - 1 >= 0 && col - 1 >= 0){
-            if (gameState[row-1][col-1] == null || gameState[row-1][col-1]?.color == "white") {
+            if (gameState[row-1][col-1] == null || (gameState[row-1][col-1]?.color == "white" && gameState[row-1][col-1]?.isProtected == false)) {
                 possibleMoves.add(Pair(row - 1, col - 1))
+            }else if (gameState[row-1][col-1]?.color == "black"){
+                gameState[row-1][col-1]?.isProtected = true
             }
         }
         if (row - 1 >= 0 && col + 1 < 8){
-            if (gameState[row-1][col+1] == null || gameState[row-1][col+1]?.color == "white") {
+            if (gameState[row-1][col+1] == null || (gameState[row-1][col+1]?.color == "white" && gameState[row-1][col+1]?.isProtected == false)) {
                 possibleMoves.add(Pair(row - 1, col + 1))
+            }else if (gameState[row-1][col+1]?.color == "black"){
+                gameState[row-1][col+1]?.isProtected = true
             }
         }
 
         if (row + 1 < 8 && col + 1 < 8){
-            if (gameState[row+1][col+1] == null || gameState[row+1][col+1]?.color == "white") {
+            if (gameState[row+1][col+1] == null || (gameState[row+1][col+1]?.color == "white"&& gameState[row+1][col+1]?.isProtected == false)) {
                 possibleMoves.add(Pair(row + 1, col + 1))
+            }else if (gameState[row+1][col+1]?.color == "black"){
+                gameState[row+1][col+1]?.isProtected = true
             }
         }
 
         if (row + 1 < 8 && col - 1 >=0){
-            if (gameState[row+1][col-1] == null || gameState[row+1][col-1]?.color == "white") {
+            if (gameState[row+1][col-1] == null || (gameState[row+1][col-1]?.color == "white" && gameState[row+1][col-1]?.isProtected == false)) {
                 possibleMoves.add(Pair(row + 1, col - 1))
+            }else if (gameState[row+1][col-1]?.color == "black"){
+                gameState[row+1][col-1]?.isProtected = true
             }
         }
         if (canCastleShort()){
@@ -78,10 +94,9 @@ class BlackKing(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         if (canCastleLong()){
             possibleMoves.add(Pair(0, 2))
         }
-        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
-            mainActivity.filterKingInCheckMoves(Pair(this.row, this.col))
+        mainActivity.filterKingInCheckMoves(Pair(this.row, this.col))
 
-        }
+
 
     }
  

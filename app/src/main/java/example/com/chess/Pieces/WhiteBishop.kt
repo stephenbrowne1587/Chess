@@ -34,6 +34,7 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
                     possibleMoves.add(Pair(row-i, col-i))
                     break
                 }else if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "white"){
+                    gameState[row-i][col-i]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row-i, col-i))
@@ -45,6 +46,7 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
                     possibleMoves.add(Pair(row-j, col+j))
                     break
                 }else if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "white"){
+                    gameState[row-j][col+j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row-j, col+j))
@@ -56,6 +58,7 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
                     possibleMoves.add(Pair(row+j, col+j))
                     break
                 }else if (gameState[row+j][col+j] != null && gameState[row+j][col+j]?.color == "white"){
+                    gameState[row+j][col+j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col+j))
@@ -67,6 +70,7 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
                     possibleMoves.add(Pair(row+j, col-j))
                     break
                 }else if (gameState[row+j][col-j] != null && gameState[row+j][col-j]?.color == "white"){
+                    gameState[row+j][col-j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col-j))

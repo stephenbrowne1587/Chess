@@ -37,6 +37,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row-j, col))
                     break
                 }else if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "black"){
+                    gameState[row-j][col]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row-j, col))
@@ -48,6 +49,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row+j, col))
                     break
                 }else if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "black"){
+                    gameState[row+j][col]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col))
@@ -59,6 +61,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row, col+j))
                     break
                 }else if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "black"){
+                    gameState[row][col+j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row, col+j))
@@ -70,6 +73,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row, col-j))
                     break
                 }else if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "black"){
+                    gameState[row][col-j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row, col-j))
@@ -82,6 +86,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row-i, col-i))
                     break
                 }else if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "black"){
+                    gameState[row-i][col-i]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row-i, col-i))
@@ -93,6 +98,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row-j, col+j))
                     break
                 }else if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "black"){
+                    gameState[row-j][col+j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row-j, col+j))
@@ -104,6 +110,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row+j, col+j))
                     break
                 }else if (gameState[row+j][col+j] != null && gameState[row+j][col+j]?.color == "black"){
+                    gameState[row+j][col+j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col+j))
@@ -115,6 +122,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
                     possibleMoves.add(Pair(row+j, col-j))
                     break
                 }else if (gameState[row+j][col-j] != null && gameState[row+j][col-j]?.color == "black"){
+                    gameState[row+j][col-j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col-j))
@@ -141,6 +149,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
         this.col = newCol
         mainActivity.detectCheck(mainActivity.gameState)
         mainActivity.setCheckWarning()
+        mainActivity.detectCheckmate()
     }
 
 

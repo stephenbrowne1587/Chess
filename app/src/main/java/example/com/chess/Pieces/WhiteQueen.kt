@@ -34,9 +34,9 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row-j, col))
                     break
                 }else if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "white"){
+                    gameState[row-j][col]?.isProtected = true
                     break
                 }
-
                 possibleMoves.add(Pair(row-j, col))
             }
         }
@@ -46,6 +46,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row+j, col))
                     break
                 }else if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "white"){
+                    gameState[row+j][col]?.isProtected = true
                     break
                 }
 
@@ -59,6 +60,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row, col+j))
                     break
                 }else if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "white"){
+                    gameState[row][col+j]?.isProtected = true
                     break
                 }
 
@@ -72,23 +74,25 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row, col-j))
                     break
                 }else if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "white"){
+                    gameState[row][col-j]?.isProtected = true
                     break
                 }
 
                 possibleMoves.add(Pair(row, col-j))
             }
         }
-        for (i in 1.until(8)){//handle left forward diagonal
-            if (row - i >= 0 && col - i >= 0){
-                if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "black"){
+        for (j in 1.until(8)){//handle left forward diagonal
+            if (row - j >= 0 && col - j >= 0){
+                if (gameState[row-j][col-j] != null && gameState[row-j][col-j]?.color == "black"){
 
-                    possibleMoves.add(Pair(row-i, col-i))
+                    possibleMoves.add(Pair(row-j, col-j))
                     break
-                }else if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "white"){
+                }else if (gameState[row-j][col-j] != null && gameState[row-j][col-j]?.color == "white"){
+                    gameState[row-j][col-j]?.isProtected = true
                     break
                 }
 
-                possibleMoves.add(Pair(row-i, col-i))
+                possibleMoves.add(Pair(row-j, col-j))
             }
         }
         for (j in 1.until(8)){//handle right forward diagonal
@@ -98,6 +102,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row-j, col+j))
                     break
                 }else if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "white"){
+                    gameState[row-j][col+j]?.isProtected = true
                     break
                 }
 
@@ -110,6 +115,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row+j, col+j))
                     break
                 }else if (gameState[row+j][col+j] != null && gameState[row+j][col+j]?.color == "white"){
+                    gameState[row+j][col+j]?.isProtected = true
                     break
                 }
 
@@ -122,6 +128,7 @@ class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                     possibleMoves.add(Pair(row+j, col-j))
                     break
                 }else if (gameState[row+j][col-j] != null && gameState[row+j][col-j]?.color == "white"){
+                    gameState[row+j][col-j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col-j))

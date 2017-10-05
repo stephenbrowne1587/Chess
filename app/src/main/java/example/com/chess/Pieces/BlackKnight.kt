@@ -32,41 +32,57 @@ class BlackKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
         if (row-2 >= 0 && col-1 >= 0){
             if(gameState[row-2][col-1] == null || gameState[row-2][col-1]?.color == "white"){
                 possibleMoves.add(Pair(row-2, col-1))
+            }else if (gameState[row-2][col-1]?.color == "black"){
+                gameState[row-2][col-1]?.isProtected = true
             }
         }
         if (row-2 >= 0 && col+1 < 8){
             if(gameState[row-2][col+1] == null || gameState[row-2][col+1]?.color == "white"){
                 possibleMoves.add(Pair(row-2, col+1))
+            }else if (gameState[row-2][col+1]?.color == "black"){
+                gameState[row-2][col+1]?.isProtected = true
             }
         }
         if (row+2 <8  && col-1 >= 0){
             if(gameState[row+2][col-1] == null || gameState[row+2][col-1]?.color == "white"){
                 possibleMoves.add(Pair(row+2, col-1))
+            }else if (gameState[row+2][col-1]?.color == "black"){
+                gameState[row+2][col-1]?.isProtected = true
             }
         }
         if (row+2 < 8 && col+1 < 8){
             if(gameState[row+2][col+1] == null || gameState[row+2][col+1]?.color == "white"){
                 possibleMoves.add(Pair(row+2, col+1))
+            } else if (gameState[row+2][col+1]?.color == "black"){
+                gameState[row+2][col+1]?.isProtected = true
             }
         }
         if (row-1 >= 0 && col-2 >= 0){
             if(gameState[row-1][col-2] == null || gameState[row-1][col-2]?.color == "white"){
                 possibleMoves.add(Pair(row-1, col-2))
+            }else if (gameState[row-1][col-2]?.color == "black"){
+                gameState[row-1][col-2]?.isProtected = true
             }
         }
         if (row-1 >= 0 && col+2 < 8){
             if(gameState[row-1][col+2] == null || gameState[row-1][col+2]?.color == "white"){
                 possibleMoves.add(Pair(row-1, col+2))
+            }else if (gameState[row-1][col+2]?.color == "black"){
+                gameState[row-1][col+2]?.isProtected = true
             }
         }
         if (row+1 <8  && col-2 >= 0){
             if(gameState[row+1][col-2] == null || gameState[row+1][col-2]?.color == "white"){
                 possibleMoves.add(Pair(row+1, col-2))
+            }else if (gameState[row+1][col-2]?.color == "black"){
+                gameState[row+1][col-2]?.isProtected = true
             }
         }
         if (row+1 < 8 && col+2 < 8){
             if(gameState[row+1][col+2] == null || gameState[row+1][col+2]?.color == "white"){
                 possibleMoves.add(Pair(row+1, col+2))
+            }else if (gameState[row+1][col+2]?.color == "black"){
+                gameState[row+1][col+2]?.isProtected = true
             }
         }
         if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){

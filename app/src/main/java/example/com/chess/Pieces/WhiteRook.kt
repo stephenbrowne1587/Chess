@@ -36,6 +36,7 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                     possibleMoves.add(Pair(row-j, col))
                     break
                 }else if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "white"){
+                    gameState[row-j][col]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row-j, col))
@@ -47,6 +48,7 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                     possibleMoves.add(Pair(row+j, col))
                     break
                 }else if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "white"){
+                    gameState[row+j][col]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row+j, col))
@@ -58,6 +60,7 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                     possibleMoves.add(Pair(row, col+j))
                     break
                 }else if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "white"){
+                    gameState[row][col+j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row, col+j))
@@ -69,6 +72,7 @@ class WhiteRook(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
                     possibleMoves.add(Pair(row, col-j))
                     break
                 }else if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "white"){
+                    gameState[row][col-j]?.isProtected = true
                     break
                 }
                 possibleMoves.add(Pair(row, col-j))
