@@ -451,15 +451,21 @@ class MainActivity : AppCompatActivity() {
         resetBoard()
     }
     fun detectCheckmate(){
+
+
         if (whiteInCheck){
             var isCheckmate = true
+            val attackerKingPair = detectCheck(gameState)
+            blockSpots = getBlockSpots(attacker = Pair(attackerKingPair?.first!!.row, attackerKingPair.first.col), king = Pair(attackerKingPair.second.row, attackerKingPair.second.col))
             gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
             gameState.flatten().map { if (it != null && it.color == "white" && it.possibleMoves.isNotEmpty()) isCheckmate = false  }
             if (isCheckmate){
                 Toast.makeText(this, "CHECKMATE", Toast.LENGTH_LONG).show()
             }
-        }else{
+        }else if (blackInCheck){
             var isCheckmate = true
+            val attackerKingPair = detectCheck(gameState)
+            blockSpots = getBlockSpots(attacker = Pair(attackerKingPair?.first!!.row, attackerKingPair.first.col), king = Pair(attackerKingPair.second.row, attackerKingPair.second.col))
             gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
             gameState.flatten().map { if (it != null && it.color == "black" && it.possibleMoves.isNotEmpty()) isCheckmate = false  }
             if (isCheckmate){
@@ -478,6 +484,7 @@ class MainActivity : AppCompatActivity() {
         }else{
             blackCheckTextView.visibility = View.GONE
         }
+        detectCheckmate()
     }
 
     fun Array<Array<ChessPiece?>>.copy() = Array(size) { get(it).clone() }
@@ -490,9 +497,11 @@ class MainActivity : AppCompatActivity() {
             for (piece in row) {
                 if (piece != null && piece.color != thisKing?.color && piece !is WhiteKing && piece !is BlackKing) {
                     piece.refreshPossibleMoves(tempGameState)
-                    if (piece is WhitePawn || piece is BlackPawn){//do not remove pawns forward move since they cannot attack with it
-                        thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves || piece.col == it.second}!!.toMutableSet()
-                    }else{
+                    if (piece is WhitePawn ){//do not remove pawns forward move since they cannot attack with it, remove pawns diagonal moves individually because they are not in pice.possibleMoves
+                        thisKing?.possibleMoves = thisKing?.possibleMoves?.filter {(it !in piece.possibleMoves && it != Pair(piece.row-1, piece.col+1) && it != Pair(piece.row-1, piece.col-1)) || piece.col == it.second}!!.toMutableSet()
+                    }else if(piece is BlackPawn){
+                        thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { (it !in piece.possibleMoves && it != Pair(piece.row+1, piece.col+1) && it != Pair(piece.row+1, piece.col-1)) || piece.col == it.second}!!.toMutableSet()
+                    } else{
                         thisKing?.possibleMoves = thisKing?.possibleMoves?.filter { it !in piece.possibleMoves }!!.toMutableSet()
                     }
 

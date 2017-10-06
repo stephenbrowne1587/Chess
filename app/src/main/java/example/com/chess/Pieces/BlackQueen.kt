@@ -149,7 +149,7 @@ class BlackQueen(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(ma
         this.col = newCol
         mainActivity.detectCheck(mainActivity.gameState)
         mainActivity.setCheckWarning()
-        mainActivity.detectCheckmate()
+//        mainActivity.detectCheckmate()
     }
 
 

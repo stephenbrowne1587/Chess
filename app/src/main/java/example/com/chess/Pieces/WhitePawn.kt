@@ -35,7 +35,7 @@ class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         if (row - 1 >= 0 && gameState[row-1][col] == null){
             possibleMoves.add(Pair(row-1, col))
         }
-        if (isFirstMove && row - 2 >= 0 && gameState[row-2][col] == null){
+        if (isFirstMove && row - 2 >= 0 && gameState[row-2][col] == null && gameState[row-1][col] == null){
             possibleMoves.add(Pair(row-2, col))
         }
         if (row - 1 >= 0 && col - 1 >= 0 && gameState[row-1][col-1]?.color == "black"){
