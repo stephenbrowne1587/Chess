@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var blackPawnPromoteLayout: GridLayout
     lateinit var whiteCheckTextView: TextView
     lateinit var blackCheckTextView: TextView
+    lateinit var newGameTextView: TextView
 
     internal var gameState: Array<Array<ChessPiece?>> = Array(8, {Array<ChessPiece?>(8, {i -> null})}) // 2D array initialized with all null values.
 
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val density = this.getResources().getDisplayMetrics().density
+//        val density = this.getResources().getDisplayMetrics().density
 
         board = findViewById(R.id.board) as GridLayout
         whiteCaptured = findViewById(R.id.light_captured_layout) as GridLayout
@@ -62,7 +63,61 @@ class MainActivity : AppCompatActivity() {
         blackPawnPromoteLayout = findViewById(R.id.blackPawnPromoteLayout) as GridLayout
         whiteCheckTextView = findViewById(R.id.light_check_textview) as TextView
         blackCheckTextView = findViewById(R.id.dark_check_textview) as TextView
+        newGameTextView = findViewById(R.id.newGameTextView) as TextView
 
+//        val displayMetrics = DisplayMetrics()
+//        windowManager.defaultDisplay.getMetrics(displayMetrics)
+////        val height = displayMetrics.heightPixels
+//        val width = displayMetrics.widthPixels
+//        val boardWidth = width - 50
+//
+//        val capturedSectionPaddingPX = (10 * density.toInt())
+//        val capturedSectionWidth = width / 13 * 8
+//        val capturedSectionHeight = width / 13 * 2
+//
+//        val layoutParams = board.layoutParams
+//        layoutParams.width = boardWidth
+//        layoutParams.height = boardWidth
+//        board.layoutParams = layoutParams
+//
+//        val capturedWhiteLayoutParams = whiteCaptured.layoutParams
+//        capturedWhiteLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
+//        capturedWhiteLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
+//
+//        val capturedBlackLayoutParams = blackCaptured.layoutParams
+//        capturedBlackLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
+//        capturedBlackLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
+//
+//        createWhitePawnPromoteLayout(boardWidth, whitePawnPromoteLayout, capturedSectionPaddingPX)
+//        createBlackPawnPromoteLayout(boardWidth, blackPawnPromoteLayout, capturedSectionPaddingPX)
+//
+//        whiteCaptured.layoutParams = capturedWhiteLayoutParams
+//        blackCaptured.layoutParams = capturedBlackLayoutParams
+//
+//        createCapturedSections(capturedSectionWidth)
+//        createBoard(boardWidth)
+        startGame()
+
+        newGameTextView.setOnClickListener {
+            resetBoard()
+            activePlayer = WHITE
+            for (i in 0.until(blackCaptured.childCount)){
+                val curSpot = blackCaptured.getChildAt(i) as ImageView
+                curSpot.setImageResource(0)
+            }
+            for (i in 0.until(whiteCaptured.childCount)){
+                val curSpot = whiteCaptured.getChildAt(i) as ImageView
+                curSpot.setImageResource(0)
+            }
+            capturedWhite.clear()
+            capturedBlack.clear()
+        }
+
+
+
+    }
+    fun startGame(){
+        val density = this.getResources().getDisplayMetrics().density
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 //        val height = displayMetrics.heightPixels
@@ -252,6 +307,8 @@ class MainActivity : AppCompatActivity() {
                         3 -> pieceToAdd = WhiteQueen(this, row, col)
                         4 -> pieceToAdd = WhiteKing(this, row, col)
                     }
+                }else{
+                    pieceToAdd = null
                 }
                 gameState[row][col] = pieceToAdd
             }
@@ -282,6 +339,7 @@ class MainActivity : AppCompatActivity() {
                     is WhiteBishop -> space.setImageResource(R.drawable.whitebishop)
                     is WhiteKing -> space.setImageResource(R.drawable.whiteking)
                     is WhiteQueen -> space.setImageResource(R.drawable.whitequeen)
+                    else -> space.setImageResource(0)
                 }
             }
         }
@@ -429,6 +487,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     setCheckWarning()
 
+
                 }
 
                 if (row % 2 == 0) {
@@ -451,8 +510,6 @@ class MainActivity : AppCompatActivity() {
         resetBoard()
     }
     fun detectCheckmate(){
-
-
         if (whiteInCheck){
             var isCheckmate = true
             val attackerKingPair = detectCheck(gameState)
@@ -473,6 +530,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun detectStalemate(){
+        if (!whiteInCheck && activePlayer == WHITE){
+            var isStalemate = true
+            gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
+            gameState.flatten().map { if (it != null && it.color == "white" && it.possibleMoves.isNotEmpty()) isStalemate = false  }
+            if (isStalemate){
+                Toast.makeText(this, "STALEMATE", Toast.LENGTH_SHORT).show()
+            }
+        }else if (!blackInCheck && activePlayer == BLACK){
+            var isStalemate = true
+            gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
+            gameState.flatten().map { if (it != null && it.color == "black" && it.possibleMoves.isNotEmpty()) isStalemate = false  }
+            if (isStalemate){
+                Toast.makeText(this, "STALEMATE", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     fun setCheckWarning(){
         if (whiteInCheck){
             whiteCheckTextView.visibility = View.VISIBLE
@@ -485,6 +561,7 @@ class MainActivity : AppCompatActivity() {
             blackCheckTextView.visibility = View.GONE
         }
         detectCheckmate()
+        detectStalemate()
     }
 
     fun Array<Array<ChessPiece?>>.copy() = Array(size) { get(it).clone() }

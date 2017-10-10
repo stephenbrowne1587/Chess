@@ -8,6 +8,18 @@
     tools:context="example.com.chess.MainActivity"
     android:background="@drawable/extra_light_square">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/newGameTextView"
+        android:text="New Game"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"/>
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
