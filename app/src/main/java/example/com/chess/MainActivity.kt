@@ -65,42 +65,15 @@ class MainActivity : AppCompatActivity() {
         blackCheckTextView = findViewById(R.id.dark_check_textview) as TextView
         newGameTextView = findViewById(R.id.newGameTextView) as TextView
 
-//        val displayMetrics = DisplayMetrics()
-//        windowManager.defaultDisplay.getMetrics(displayMetrics)
-////        val height = displayMetrics.heightPixels
-//        val width = displayMetrics.widthPixels
-//        val boardWidth = width - 50
-//
-//        val capturedSectionPaddingPX = (10 * density.toInt())
-//        val capturedSectionWidth = width / 13 * 8
-//        val capturedSectionHeight = width / 13 * 2
-//
-//        val layoutParams = board.layoutParams
-//        layoutParams.width = boardWidth
-//        layoutParams.height = boardWidth
-//        board.layoutParams = layoutParams
-//
-//        val capturedWhiteLayoutParams = whiteCaptured.layoutParams
-//        capturedWhiteLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
-//        capturedWhiteLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
-//
-//        val capturedBlackLayoutParams = blackCaptured.layoutParams
-//        capturedBlackLayoutParams.width = capturedSectionWidth + capturedSectionPaddingPX
-//        capturedBlackLayoutParams.height = capturedSectionHeight + capturedSectionPaddingPX
-//
-//        createWhitePawnPromoteLayout(boardWidth, whitePawnPromoteLayout, capturedSectionPaddingPX)
-//        createBlackPawnPromoteLayout(boardWidth, blackPawnPromoteLayout, capturedSectionPaddingPX)
-//
-//        whiteCaptured.layoutParams = capturedWhiteLayoutParams
-//        blackCaptured.layoutParams = capturedBlackLayoutParams
-//
-//        createCapturedSections(capturedSectionWidth)
-//        createBoard(boardWidth)
+        whiteCheckTextView.textSize = 50f
+        blackCheckTextView.textSize = 50f
+
         startGame()
 
         newGameTextView.setOnClickListener {
             resetBoard()
             activePlayer = WHITE
+            selectedSpot = null
             for (i in 0.until(blackCaptured.childCount)){
                 val curSpot = blackCaptured.getChildAt(i) as ImageView
                 curSpot.setImageResource(0)
@@ -111,6 +84,14 @@ class MainActivity : AppCompatActivity() {
             }
             capturedWhite.clear()
             capturedBlack.clear()
+            whiteCheckTextView.visibility = View.GONE
+            whiteCheckTextView.text = "CHECK"
+            whiteCheckTextView.textSize = 50f
+            blackCheckTextView.visibility = View.GONE
+            blackCheckTextView.text = "CHECK"
+            blackCheckTextView.textSize = 50f
+            unhighlightBoard()
+
         }
 
 
@@ -486,8 +467,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     setCheckWarning()
-
-
                 }
 
                 if (row % 2 == 0) {
@@ -517,7 +496,8 @@ class MainActivity : AppCompatActivity() {
             gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
             gameState.flatten().map { if (it != null && it.color == "white" && it.possibleMoves.isNotEmpty()) isCheckmate = false  }
             if (isCheckmate){
-                Toast.makeText(this, "CHECKMATE", Toast.LENGTH_LONG).show()
+                whiteCheckTextView.text = "CHECKMATE"
+                whiteCheckTextView.textSize = 35f
             }
         }else if (blackInCheck){
             var isCheckmate = true
@@ -526,7 +506,8 @@ class MainActivity : AppCompatActivity() {
             gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
             gameState.flatten().map { if (it != null && it.color == "black" && it.possibleMoves.isNotEmpty()) isCheckmate = false  }
             if (isCheckmate){
-                Toast.makeText(this, "CHECKMATE", Toast.LENGTH_LONG).show()
+                blackCheckTextView.text = "CHECKMATE"
+                blackCheckTextView.textSize = 35f
             }
         }
     }
@@ -537,14 +518,16 @@ class MainActivity : AppCompatActivity() {
             gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
             gameState.flatten().map { if (it != null && it.color == "white" && it.possibleMoves.isNotEmpty()) isStalemate = false  }
             if (isStalemate){
-                Toast.makeText(this, "STALEMATE", Toast.LENGTH_SHORT).show()
+                whiteCheckTextView.text = "STALEMATE"
+                whiteCheckTextView.textSize = 35f
             }
         }else if (!blackInCheck && activePlayer == BLACK){
             var isStalemate = true
             gameState.flatten().map { it?.refreshPossibleMoves(gameState) }
             gameState.flatten().map { if (it != null && it.color == "black" && it.possibleMoves.isNotEmpty()) isStalemate = false  }
             if (isStalemate){
-                Toast.makeText(this, "STALEMATE", Toast.LENGTH_SHORT).show()
+                blackCheckTextView.text = "STALEMATE"
+                blackCheckTextView.textSize = 35f
             }
         }
     }
