@@ -1,4 +1,4 @@
-package example.com.chess;
+package com.stephen_browne.chess;
 
 import org.junit.Test;
 

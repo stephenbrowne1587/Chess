@@ -1,21 +1,22 @@
-package example.com.chess.Pieces
+package com.stephen_browne.chess.Pieces
 
 import android.widget.ImageView
-import example.com.chess.ChessPiece
-import example.com.chess.MainActivity
-import example.com.chess.R
+import com.stephen_browne.chess.ChessPiece
+import com.stephen_browne.chess.MainActivity
+import com.stephen_browne.chess.R
 
 /**
  * Created by steph on 9/14/2017.
  */
-class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
-    override val color: String
-        get() = "black"
-    var isFirstMove: Boolean = true
+class WhitePawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
 
     override var possibleMoves: MutableSet<Pair<Int, Int>> = mutableSetOf()
+    override val color: String
+        get() = "white"
+    var isFirstMove: Boolean = true
 
     override fun highlightPossibleMoves(){
+
         for (move in possibleMoves){
             val rowj = move.first
             val colj = move.second
@@ -29,26 +30,25 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
     }
     override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
-        if (row + 1 < 8 && gameState[row+1][col] == null){
-            possibleMoves.add(Pair(row+1, col))
+        if (row - 1 >= 0 && gameState[row-1][col] == null){
+            possibleMoves.add(Pair(row-1, col))
         }
-        if (isFirstMove && row + 2 >= 0 && gameState[row+2][col] == null && gameState[row+1][col] == null){
-            possibleMoves.add(Pair(row+2, col))
+        if (isFirstMove && row - 2 >= 0 && gameState[row-2][col] == null && gameState[row-1][col] == null){
+            possibleMoves.add(Pair(row-2, col))
         }
-        if (row + 1 < 8 && col - 1 >= 0 && gameState[row+1][col-1]?.color == "white"){
-            possibleMoves.add(Pair(row+1, col-1))
-        }else if (row + 1 < 8 && col - 1 >= 0 && gameState[row+1][col-1]?.color == "black"){
-            gameState[row+1][col-1]?.isProtected = true
+        if (row - 1 >= 0 && col - 1 >= 0 && gameState[row-1][col-1]?.color == "black"){
+            possibleMoves.add(Pair(row-1, col-1))
+        }else if (row - 1 >= 0 && col - 1 >= 0 && gameState[row-1][col-1]?.color == "white"){
+            gameState[row-1][col-1]?.isProtected = true
         }
-        if (row + 1 < 8 && col + 1 < 8 && gameState[row+1][col+1]?.color == "white"){
-            possibleMoves.add(Pair(row+1, col+1))
-        }else if (row + 1 < 8 && col + 1 < 8 && gameState[row+1][col+1]?.color == "black"){
-            gameState[row+1][col+1]?.isProtected = true
+        if (row - 1 >= 0 && col + 1 < 8 && gameState[row-1][col+1]?.color == "black"){
+            possibleMoves.add(Pair(row-1, col+1))
+        }else if (row - 1 >= 0 && col + 1 < 8 && gameState[row-1][col+1]?.color == "white"){
+            gameState[row-1][col+1]?.isProtected = true
         }
-        if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
+        if (mainActivity.whiteInCheck || mainActivity.isBlockingWhite){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
-
     }
 
     override fun movePiece(newRow: Int, newCol: Int) {
@@ -62,12 +62,17 @@ class BlackPawn(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mai
         val oldSpot: ImageView = mainActivity.board.findViewWithTag("space:$row-$col") as ImageView
 
         oldSpot.setImageResource(R.drawable.blank)
-        newSpot.setImageResource(R.drawable.blackpawn)
+        newSpot.setImageResource(R.drawable.whitepawn)
         this.row = newRow
         this.col = newCol
         mainActivity.detectCheck(mainActivity.gameState)
         mainActivity.setCheckWarning()
     }
+
+
+
+
+
 
 
 }

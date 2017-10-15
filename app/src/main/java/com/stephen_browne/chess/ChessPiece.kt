@@ -1,9 +1,8 @@
-package example.com.chess
+package com.stephen_browne.chess
 
-import android.support.v4.content.ContextCompat
 import android.widget.ImageView
-import example.com.chess.Pieces.BlackPawn
-import example.com.chess.Pieces.WhitePawn
+import com.stephen_browne.chess.Pieces.BlackPawn
+import com.stephen_browne.chess.Pieces.WhitePawn
 
 /**
  * Created by steph on 9/14/2017.

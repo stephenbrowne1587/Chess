@@ -1,20 +1,12 @@
-package example.com.chess
+package com.stephen_browne.chess
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.Color.WHITE
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Display
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.*
-import example.com.chess.Pieces.*
-import java.lang.reflect.Array.get
+import com.stephen_browne.chess.Pieces.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var board: GridLayout

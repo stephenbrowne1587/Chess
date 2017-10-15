@@ -5,19 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="example.com.chess.MainActivity"
+    tools:context="com.stephen_browne.chess.MainActivity"
     android:background="@drawable/extra_light_square">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/newGameTextView"
+        android:background="@drawable/newgamebackground"
         android:text="New Game"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
         android:textColor="@color/black"/>
 
 

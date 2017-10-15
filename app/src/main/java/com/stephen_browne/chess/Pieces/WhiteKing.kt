@@ -1,9 +1,9 @@
-package example.com.chess.Pieces
+package com.stephen_browne.chess.Pieces
 
 import android.widget.ImageView
-import example.com.chess.ChessPiece
-import example.com.chess.MainActivity
-import example.com.chess.R
+import com.stephen_browne.chess.ChessPiece
+import com.stephen_browne.chess.MainActivity
+import com.stephen_browne.chess.R
 
 /**
  * Created by steph on 9/14/2017.

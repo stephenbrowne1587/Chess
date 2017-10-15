@@ -1,14 +1,14 @@
-package example.com.chess.Pieces
+package com.stephen_browne.chess.Pieces
 
 import android.widget.ImageView
-import example.com.chess.ChessPiece
-import example.com.chess.MainActivity
-import example.com.chess.R
+import com.stephen_browne.chess.ChessPiece
+import com.stephen_browne.chess.MainActivity
+import com.stephen_browne.chess.R
 
 /**
  * Created by steph on 9/14/2017.
  */
-class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
+class WhiteQueen (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(mainActivity, row, col){
     override val color: String
         get() = "white"
 
@@ -22,33 +22,90 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
             nextSpot.setBackgroundResource(R.drawable.circle2)
         }
     }
+
     override fun canMove(newRow: Int, newCol: Int): Boolean{
         return  possibleMoves.contains(Pair(newRow, newCol))
     }
-
     override fun refreshPossibleMoves(gameState: Array<Array<ChessPiece?>>){
         possibleMoves.clear()
-        for (i in 1.until(8)){//handle left forward diagonal
-            if (row - i >= 0 && col - i >= 0){
-                if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "black"){
-                    possibleMoves.add(Pair(row-i, col-i))
+        for (j in 1.until(8)){//handle forward
+            if (row - j >= 0){
+                if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "black"){
+                    possibleMoves.add(Pair(row-j, col))
                     break
-                }else if (gameState[row-i][col-i] != null && gameState[row-i][col-i]?.color == "white"){
-                    gameState[row-i][col-i]?.isProtected = true
+                }else if (gameState[row-j][col] != null && gameState[row-j][col]?.color == "white"){
+                    gameState[row-j][col]?.isProtected = true
                     break
                 }
-                possibleMoves.add(Pair(row-i, col-i))
+                possibleMoves.add(Pair(row-j, col))
+            }
+        }
+        for (j in 1.until(8)){//handle back
+            if (row + j < 8){
+                if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "black"){
+                    possibleMoves.add(Pair(row+j, col))
+                    break
+                }else if (gameState[row+j][col] != null && gameState[row+j][col]?.color == "white"){
+                    gameState[row+j][col]?.isProtected = true
+                    break
+                }
+
+                possibleMoves.add(Pair(row+j, col))
+            }
+        }
+        for (j in 1.until(8)){//handle right
+            if (col + j < 8){
+                if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "black"){
+
+                    possibleMoves.add(Pair(row, col+j))
+                    break
+                }else if (gameState[row][col+j] != null && gameState[row][col+j]?.color == "white"){
+                    gameState[row][col+j]?.isProtected = true
+                    break
+                }
+
+                possibleMoves.add(Pair(row, col+j))
+            }
+        }
+        for (j in 1.until(8)){//handle left
+            if (col - j >= 0){
+                if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "black"){
+
+                    possibleMoves.add(Pair(row, col-j))
+                    break
+                }else if (gameState[row][col-j] != null && gameState[row][col-j]?.color == "white"){
+                    gameState[row][col-j]?.isProtected = true
+                    break
+                }
+
+                possibleMoves.add(Pair(row, col-j))
+            }
+        }
+        for (j in 1.until(8)){//handle left forward diagonal
+            if (row - j >= 0 && col - j >= 0){
+                if (gameState[row-j][col-j] != null && gameState[row-j][col-j]?.color == "black"){
+
+                    possibleMoves.add(Pair(row-j, col-j))
+                    break
+                }else if (gameState[row-j][col-j] != null && gameState[row-j][col-j]?.color == "white"){
+                    gameState[row-j][col-j]?.isProtected = true
+                    break
+                }
+
+                possibleMoves.add(Pair(row-j, col-j))
             }
         }
         for (j in 1.until(8)){//handle right forward diagonal
             if (row - j >= 0 && col + j < 8){
                 if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "black"){
+
                     possibleMoves.add(Pair(row-j, col+j))
                     break
                 }else if (gameState[row-j][col+j] != null && gameState[row-j][col+j]?.color == "white"){
                     gameState[row-j][col+j]?.isProtected = true
                     break
                 }
+
                 possibleMoves.add(Pair(row-j, col+j))
             }
         }
@@ -61,6 +118,7 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
                     gameState[row+j][col+j]?.isProtected = true
                     break
                 }
+
                 possibleMoves.add(Pair(row+j, col+j))
             }
         }
@@ -81,7 +139,6 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
         }
     }
 
-
     override fun movePiece(newRow: Int, newCol: Int) {
         super.movePiece(newRow, newCol)
         mainActivity.gameState[newRow][newCol] = this
@@ -92,12 +149,33 @@ class WhiteBishop (mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(
         val oldSpot: ImageView = mainActivity.board.findViewWithTag("space:$row-$col") as ImageView
 
         oldSpot.setImageResource(R.drawable.blank)
-        newSpot.setImageResource(R.drawable.whitebishop)
+        newSpot.setImageResource(R.drawable.whitequeen)
         this.row = newRow
         this.col = newCol
         mainActivity.detectCheck(mainActivity.gameState)
         mainActivity.setCheckWarning()
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
