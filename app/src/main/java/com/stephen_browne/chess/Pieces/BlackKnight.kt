@@ -85,10 +85,7 @@ class BlackKnight(mainActivity: MainActivity, row: Int, col: Int) : ChessPiece(m
                 gameState[row+1][col+2]?.isProtected = true
             }
         }
-        if (mainActivity.blackInCheck && mainActivity.isBlockingBlack){
-            possibleMoves.clear()
-
-        }else if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
+         if (mainActivity.blackInCheck || mainActivity.isBlockingBlack){
             possibleMoves = possibleMoves.intersect(mainActivity.blockSpots).toMutableSet()
         }
 

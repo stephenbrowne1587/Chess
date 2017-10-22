@@ -3,7 +3,6 @@ package com.stephen_browne.chess
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.stephen_browne.chess.Pieces.*
@@ -334,7 +333,6 @@ class MainActivity : AppCompatActivity() {
 
     }
     fun capturePiece(piece: ChessPiece){
-        Log.i("piece captured", piece.color + " piece captured")
         if (piece.color == WHITE){
             val row = if (capturedWhite.size >= 8) 1 else 0
             val col = capturedWhite.size % 8
